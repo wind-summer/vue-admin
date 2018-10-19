@@ -1,10 +1,21 @@
 import axios from 'axios';
 
-let base = '';
 
-export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };
+var token = sessionStorage.getItem("token");
+//var qs=require('qs');
+var instance = axios.create({
+    headers: {'Content-Type': 'application/json','token':token}
+});
 
-export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
+let base = 'http://localhost:8090/admin';
+let base1 = '';
+
+//登录
+export const requestLogin = params => { return instance.post(`${base}/sys/login/sign_in`, params).then(res => res.data); };
+export const requestLogin1 = params => { return axios.post(`${base1}/login`, params).then(res => res.data); };
+
+//用户列表
+export const getUserList = params => { return instance.get(`${base}/sys/user/users`, { params: params }); };
 
 export const getUserListPage = params => { return axios.get(`${base}/user/listpage`, { params: params }); };
 

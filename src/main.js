@@ -3,7 +3,7 @@ import Vue from 'vue'
 import App from './App'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
-//import './assets/theme/theme-green/index.css'
+//import './assets/theme/theme-black/index.css'
 import VueRouter from 'vue-router'
 import store from './vuex/store'
 import Vuex from 'vuex'
@@ -11,6 +11,8 @@ import Vuex from 'vuex'
 //import 'nprogress/nprogress.css'
 import routes from './routes'
 import Mock from './mock'
+
+
 Mock.bootstrap();
 import 'font-awesome/css/font-awesome.min.css'
 
@@ -49,4 +51,3 @@ new Vue({
   //components: { App }
   render: h => h(App)
 }).$mount('#app')
-

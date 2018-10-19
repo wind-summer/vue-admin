@@ -1,11 +1,11 @@
 <template>
-  <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
+  <el-form :model="loginForm" :rules="rules" ref="loginForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
     <h3 class="title">系统登录</h3>
-    <el-form-item prop="account">
-      <el-input type="text" v-model="ruleForm2.account" auto-complete="off" placeholder="账号"></el-input>
+    <el-form-item prop="username">
+      <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="账号"></el-input>
     </el-form-item>
-    <el-form-item prop="checkPass">
-      <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码"></el-input>
+    <el-form-item prop="password">
+      <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
     <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
     <el-form-item style="width:100%;">
@@ -16,22 +16,22 @@
 </template>
 
 <script>
-  import { requestLogin } from '../api/api';
+  import  { requestLogin } from '@/api/api.js';
   //import NProgress from 'nprogress'
   export default {
     data() {
       return {
         logining: false,
-        ruleForm2: {
-          account: 'admin',
-          checkPass: '123456'
+        loginForm: {
+          username: 'admin',
+          password: '123456'
         },
-        rules2: {
-          account: [
+        rules: {
+          username: [
             { required: true, message: '请输入账号', trigger: 'blur' },
             //{ validator: validaePass }
           ],
-          checkPass: [
+          password: [
             { required: true, message: '请输入密码', trigger: 'blur' },
             //{ validator: validaePass2 }
           ]
@@ -41,27 +41,29 @@
     },
     methods: {
       handleReset2() {
-        this.$refs.ruleForm2.resetFields();
+        this.$refs.loginForm.resetFields();
       },
       handleSubmit2(ev) {
         var _this = this;
-        this.$refs.ruleForm2.validate((valid) => {
+        this.$refs.loginForm.validate((valid) => {
           if (valid) {
             //_this.$router.replace('/table');
             this.logining = true;
             //NProgress.start();
-            var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
+            var loginParams = { username: _this.loginForm.username, password: _this.loginForm.password };
             requestLogin(loginParams).then(data => {
+              console.log(data.code);
               this.logining = false;
               //NProgress.done();
-              let { msg, code, user } = data;
-              if (code !== 200) {
+              let { msg, code, user, token } = data;
+              if (code !== 0) {
                 this.$message({
                   message: msg,
                   type: 'error'
                 });
               } else {
                 sessionStorage.setItem('user', JSON.stringify(user));
+                sessionStorage.setItem('token', token);
                 this.$router.push({ path: '/table' });
               }
             });
