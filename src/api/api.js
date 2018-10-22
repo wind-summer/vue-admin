@@ -1,5 +1,9 @@
 import axios from 'axios';
 
+// const router = new VueRouter({
+//   routes
+// })
+
 //var qs=require('qs');
 var instance = axios.create({
     headers: {'Content-Type': 'application/json'}
@@ -25,11 +29,10 @@ export const editUser = params => { return axios.get(`${base}/user/edit`, { para
 export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
 
 // http request 请求拦截器，有token值则配置上token值
-instance.interceptors.request.use(request => {
+instance.interceptors.request.use((request, _this) => {
     var token = sessionStorage.getItem("token");
     if (token) {
         // 每次发送请求之前判断是否存在token，如果存在，则统一在http请求的header都加上token，不用每次请求都手动添加了
-        debugger;
         request.headers.common['token'] =token;
         //config.headers.Authorization = token;
     }
@@ -40,7 +43,7 @@ instance.interceptors.response.use(response => {
   debugger;
   var code = response.data.code;
   if(code && code == 401) {
-    //$router.push({ path: '/login' });
+    window.location.href = '/#/login' ;
     console.log('请从新登陆');
   }
   return response;
