@@ -15,17 +15,16 @@
 		<!--列表-->
 		<template>
 			<el-table :data="users" highlight-current-row v-loading="loading" style="width: 100%;">
-				<el-table-column type="index" width="60">
+				<el-table-column type="index" width="110">
 				</el-table-column>
-				<el-table-column prop="name" label="姓名" width="120" sortable>
+				<el-table-column prop="username" label="账户" width="200" sortable>
 				</el-table-column>
-				<el-table-column prop="sex" label="性别" width="100" :formatter="formatSex" sortable>
+				<el-table-column prop="name" label="姓名" width="200" sortable>
+					<!-- :formatter="formatSex" -->
 				</el-table-column>
-				<el-table-column prop="age" label="年龄" width="100" sortable>
+				<el-table-column prop="mobile" label="手机号码" width="250" sortable>
 				</el-table-column>
-				<el-table-column prop="birth" label="生日" width="120" sortable>
-				</el-table-column>
-				<el-table-column prop="addr" label="地址" min-width="180" sortable>
+				<el-table-column prop="email" label="邮箱" width="350" sortable>
 				</el-table-column>
 			</el-table>
 		</template>
@@ -54,13 +53,14 @@
 			//获取用户列表
 			getUser: function () {
 				let para = {
-					name: this.filters.name
+					usernameOrName: this.filters.name
 				};
 				this.loading = true;
+				debugger;
 				//NProgress.start();
 				getUserList(para).then((res) => {
 					debugger;
-					this.users = res.list;
+					this.users = res.data.records;
 					this.loading = false;
 					//NProgress.done();
 				});

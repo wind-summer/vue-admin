@@ -4,7 +4,8 @@ import Home from './views/Home.vue'
 import Main from './views/Main.vue'
 import Table from './views/nav1/Table.vue'
 import Form from './views/nav1/Form.vue'
-import user from './views/nav1/user.vue'
+import Users from './views/nav1/User.vue'
+import User from './views/system/User.vue'
 import Page4 from './views/nav2/Page4.vue'
 import Page5 from './views/nav2/Page5.vue'
 import Page6 from './views/nav3/Page6.vue'
@@ -27,6 +28,16 @@ let routes = [
     {
         path: '/',
         component: Home,
+        name: '系统管理',
+        iconCls: 'el-icon-message',//图标样式class
+        children: [
+            //, hidden: true
+            { path: '/user', component: User, name: '用户管理' },
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
         name: '导航一',
         iconCls: 'el-icon-message',//图标样式class
         children: [
@@ -34,7 +45,7 @@ let routes = [
             { path: '/main', component: Main, name: '主页' },
             { path: '/table', component: Table, name: 'Table' },
             { path: '/form', component: Form, name: 'Form' },
-            { path: '/user', component: user, name: '用户' },
+            { path: '/users', component: Users, name: '用户' },
         ]
     },
     {
