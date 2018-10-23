@@ -1,10 +1,5 @@
 import axios from 'axios';
 
-// const router = new VueRouter({
-//   routes
-// })
-
-//var qs=require('qs');
 var instance = axios.create({
     headers: {'Content-Type': 'application/json'}
 });
@@ -20,13 +15,13 @@ export const getUserList = params => { return instance.get(`${base}/sys/user/use
 
 export const getUserListPage = params => { return instance.get(`${base}/sys/user/users`, { params: params }); };
 
-export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }); };
+export const removeUser = params => { return axios.delete(`${base}/user/remove`, { params: params }); };
 
-export const batchRemoveUser = params => { return axios.get(`${base}/user/batchremove`, { params: params }); };
+export const batchRemoveUser = params => { return axios.delete(`${base}/user/batchremove`, { params: params }); };
 
-export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }); };
+export const editUser = params => { return axios.put(`${base}/user/edit`, { params: params }); };
 
-export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
+export const addUser = params => { return instance.post(`${base}/sys/user/user`, params).then(res => res.data); };
 
 // http request 请求拦截器，有token值则配置上token值
 instance.interceptors.request.use((request, _this) => {
@@ -40,7 +35,6 @@ instance.interceptors.request.use((request, _this) => {
 });
 // http response 服务器响应拦截器，这里拦截401错误，并重新跳入登页重新获取token
 instance.interceptors.response.use(response => {
-  debugger;
   var code = response.data.code;
   if(code && code == 401) {
     window.location.href = '/#/login' ;

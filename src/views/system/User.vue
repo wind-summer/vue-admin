@@ -21,13 +21,13 @@
 			</el-table-column>
 			<el-table-column type="index" width="60">
 			</el-table-column>
-			<el-table-column prop="username" label="姓名" width="200" sortable>
+			<el-table-column prop="username" label="账号" width="150" sortable>
 			</el-table-column>
-			<el-table-column prop="name" label="性别" width="200" sortable>
+			<el-table-column prop="name" label="姓名" width="200" sortable>
 			</el-table-column>
-			<el-table-column prop="mobile" label="年龄" width="200" sortable>
+			<el-table-column prop="mobile" label="手机号" width="190" sortable>
 			</el-table-column>
-			<el-table-column prop="email" label="生日" width="200" sortable>
+			<el-table-column prop="email" label="邮箱" width="300" sortable>
 			</el-table-column>
 			<el-table-column label="操作" width="150">
 				<template scope="scope">
@@ -73,12 +73,27 @@
 		</el-dialog>
 
 		<!--新增界面-->
-		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false">
+		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false" width="10%">
 			<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-				<el-form-item label="姓名" prop="name">
+				<el-form-item label="姓名" prop="name" label-width="80px">
 					<el-input v-model="addForm.name" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="性别">
+				<el-form-item label="账号" prop="username">
+					<el-input v-model="addForm.username" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="密码" prop="password">
+					<el-input v-model="addForm.password" type="password" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="确认密码" prop="password2">
+					<el-input v-model="addForm.password2" type="password" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="手机" prop="mobile">
+					<el-input v-model="addForm.mobile" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="邮箱" prop="email">
+					<el-input v-model="addForm.email" auto-complete="off"></el-input>
+				</el-form-item>
+				<!-- <el-form-item label="性别">
 					<el-radio-group v-model="addForm.sex">
 						<el-radio class="radio" :label="1">男</el-radio>
 						<el-radio class="radio" :label="0">女</el-radio>
@@ -92,7 +107,7 @@
 				</el-form-item>
 				<el-form-item label="地址">
 					<el-input type="textarea" v-model="addForm.addr"></el-input>
-				</el-form-item>
+				</el-form-item> -->
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="addFormVisible = false">取消</el-button>
@@ -110,6 +125,15 @@
 
 	export default {
 		data() {
+			var checkPassword = (rule, value, callback) => {
+				if (value === '') {
+					callback(new Error('请再次输入密码'));
+				} else if (value !== this.addForm.password) {
+					callback(new Error('两次输入密码不一致!'));
+				} else {
+					callback();
+				}
+			};
 			return {
 				filters: {
 					name: ''
@@ -125,6 +149,18 @@
 				editFormRules: {
 					name: [
 						{ required: true, message: '请输入姓名', trigger: 'blur' }
+					],
+					username: [
+						{ required: true, message: '请输入账号', trigger: 'blur' }
+					],
+					password: [
+						{ required: true, message: '请输入密码', trigger: 'blur' }
+					],
+					password2: [
+						{ required: true, message: '请输入确认密码', trigger: 'blur' }
+					],
+					mobile: [
+						{ required: true, message: '请输入手机号', trigger: 'blur' }
 					]
 				},
 				//编辑界面数据
@@ -142,15 +178,28 @@
 				addFormRules: {
 					name: [
 						{ required: true, message: '请输入姓名', trigger: 'blur' }
+					],
+					username: [
+						{ required: true, message: '请输入账号', trigger: 'blur' }
+					],
+					password: [
+						{ required: true, message: '请输入密码', trigger: 'blur' }
+					],
+					password2: [
+						{ validator: checkPassword, trigger: 'blur,change' }
+					],
+					mobile: [
+						{ required: true, message: '请输入手机号', trigger: 'blur' }
 					]
 				},
 				//新增界面数据
 				addForm: {
 					name: '',
-					sex: -1,
-					age: 0,
-					birth: '',
-					addr: ''
+					username: '',
+					password: '',
+					password2: '',
+					mobile: '',
+					email: ''
 				}
 
 			}
@@ -247,18 +296,32 @@
 						this.$confirm('确认提交吗？', '提示', {}).then(() => {
 							this.addLoading = true;
 							//NProgress.start();
-							let para = Object.assign({}, this.addForm);
-							para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-							addUser(para).then((res) => {
+							debugger;
+							var addParams = { name: this.addForm.name, username: this.addForm.username, password: this.addForm.password, mobile: this.addForm.mobile, email: this.addForm.email };
+							let para = this.addForm;
+							//para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
+							addUser(para).then((res,error) => {
+								debugger;
 								this.addLoading = false;
-								//NProgress.done();
-								this.$message({
-									message: '提交成功',
-									type: 'success'
-								});
-								this.$refs['addForm'].resetFields();
-								this.addFormVisible = false;
-								this.getUsers();
+								let { msg, code, data } = res;
+								if(code == 0){
+									//NProgress.done();
+									this.$message({
+										message: msg,
+										type: 'success'
+									});
+									this.$refs['addForm'].resetFields();
+									this.addFormVisible = false;
+									this.getUsers();
+								}else{
+									this.$message({
+										message: msg,
+										type: 'error'
+									});
+									//this.$refs['addForm'].resetFields();
+									//this.addFormVisible = false;
+									//this.getUsers();
+								}
 							});
 						});
 					}
