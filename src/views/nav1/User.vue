@@ -56,10 +56,8 @@
 					usernameOrName: this.filters.name
 				};
 				this.loading = true;
-				debugger;
 				//NProgress.start();
 				getUserList(para).then((res) => {
-					debugger;
 					this.users = res.data.records;
 					this.loading = false;
 					//NProgress.done();

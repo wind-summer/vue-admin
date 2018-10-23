@@ -5,7 +5,6 @@ var instance = axios.create({
 });
 
 let base = 'http://localhost:8090/admin';
-let base1 = '';
 
 //登录
 export const requestLogin = params => { return instance.post(`${base}/sys/login/sign_in`, params).then(res => res.data); };

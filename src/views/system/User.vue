@@ -29,7 +29,7 @@
 			</el-table-column>
 			<el-table-column prop="email" label="邮箱" width="300" sortable>
 			</el-table-column>
-			<el-table-column label="操作" width="150">
+			<el-table-column label="操作" width="150" >
 				<template scope="scope">
 					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
@@ -40,7 +40,7 @@
 		<!--工具条-->
 		<el-col :span="24" class="toolbar">
 			<el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
-			<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
+			<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="size" :total="total" style="float:right;">
 			</el-pagination>
 		</el-col>
 
@@ -141,6 +141,7 @@
 				users: [],
 				total: 0,
 				page: 1,
+				size: 10,
 				listLoading: false,
 				sels: [],//列表选中列
 
@@ -216,13 +217,17 @@
 			//获取用户列表
 			getUsers() {
 				let para = {
-					page: this.page,
+                    size: this.size,
+					current: this.page,
 					usernameOrName: this.filters.name
 				};
 				this.listLoading = true;
 				//NProgress.start();
 				getUserListPage(para).then((res) => {
+				    debugger;
 					this.total = res.data.total;
+                    this.size = res.data.size;
+                    this.current = res.data.current;
 					this.users = res.data.records;
 					this.listLoading = false;
 					//NProgress.done();
@@ -296,12 +301,10 @@
 						this.$confirm('确认提交吗？', '提示', {}).then(() => {
 							this.addLoading = true;
 							//NProgress.start();
-							debugger;
-							var addParams = { name: this.addForm.name, username: this.addForm.username, password: this.addForm.password, mobile: this.addForm.mobile, email: this.addForm.email };
+							//var addParams = { name: this.addForm.name, username: this.addForm.username, password: this.addForm.password, mobile: this.addForm.mobile, email: this.addForm.email };
 							let para = this.addForm;
 							//para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
 							addUser(para).then((res,error) => {
-								debugger;
 								this.addLoading = false;
 								let { msg, code, data } = res;
 								if(code == 0){
