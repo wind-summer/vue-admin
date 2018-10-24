@@ -45,25 +45,19 @@
 		</el-col>
 
 		<!--编辑界面-->
-		<el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
+		<el-dialog title="编辑" v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false">
 			<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-				<el-form-item label="姓名" prop="name">
+				<el-form-item label="姓名" prop="name" label-width="80px">
 					<el-input v-model="editForm.name" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="性别">
-					<el-radio-group v-model="editForm.sex">
-						<el-radio class="radio" :label="1">男</el-radio>
-						<el-radio class="radio" :label="0">女</el-radio>
-					</el-radio-group>
+				<el-form-item label="账号" prop="username">
+					<el-input v-model="editForm.username" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="年龄">
-					<el-input-number v-model="editForm.age" :min="0" :max="200"></el-input-number>
+				<el-form-item label="手机" prop="mobile">
+					<el-input v-model="editForm.mobile" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="生日">
-					<el-date-picker type="date" placeholder="选择日期" v-model="editForm.birth"></el-date-picker>
-				</el-form-item>
-				<el-form-item label="地址">
-					<el-input type="textarea" v-model="editForm.addr"></el-input>
+				<el-form-item label="邮箱" prop="email">
+					<el-input v-model="editForm.email" auto-complete="off"></el-input>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -73,9 +67,9 @@
 		</el-dialog>
 
 		<!--新增界面-->
-		<el-dialog title="新增" v-model="addFormVisible" :close-on-click-modal="false" width="10%">
-			<el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-				<el-form-item label="姓名" prop="name" label-width="80px">
+		<el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" width="30%">
+			<el-form :model="addForm" status-icon :rules="addFormRules" ref="addForm" label-width="80px" class="demo-ruleForm">
+				<el-form-item label="姓名" prop="name">
 					<el-input v-model="addForm.name" auto-complete="off"></el-input>
 				</el-form-item>
 				<el-form-item label="账号" prop="username">
@@ -130,6 +124,26 @@
 					callback(new Error('请再次输入密码'));
 				} else if (value !== this.addForm.password) {
 					callback(new Error('两次输入密码不一致!'));
+				} else {
+					callback();
+				}
+			};
+			var checkEmail = (rule, value, callback) => {
+				const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+				if (value === '') {
+					callback();
+				} else if (!mailReg.test(value)) {
+					callback(new Error('邮箱格式不正确!'));
+				} else {
+					callback();
+				}
+			};
+			var checkMobile = (rule, value, callback) => {
+				const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/;
+				if (value === '') {
+					callback(new Error('请输入手机号'));
+				} else if (!phoneReg.test(value)) {
+					callback(new Error('手机格式不正确'));
 				} else {
 					callback();
 				}
@@ -190,7 +204,10 @@
 						{ validator: checkPassword, trigger: 'blur,change' }
 					],
 					mobile: [
-						{ required: true, message: '请输入手机号', trigger: 'blur' }
+						{ validator: checkMobile, trigger: 'blur' }
+					],
+					email: [
+						{ validator: checkEmail, trigger: 'blur' }
 					]
 				},
 				//新增界面数据
@@ -224,10 +241,9 @@
 				this.listLoading = true;
 				//NProgress.start();
 				getUserListPage(para).then((res) => {
-				    debugger;
 					this.total = res.data.total;
-                    this.size = res.data.size;
-                    this.current = res.data.current;
+          this.size = res.data.size;
+          this.current = res.data.current;
 					this.users = res.data.records;
 					this.listLoading = false;
 					//NProgress.done();
@@ -238,17 +254,26 @@
 				this.$confirm('确认删除该记录吗?', '提示', {
 					type: 'warning'
 				}).then(() => {
+					debugger;
 					this.listLoading = true;
 					//NProgress.start();
-					let para = { id: row.id };
-					removeUser(para).then((res) => {
+					batchRemoveUser(row.id).then((res) => {
 						this.listLoading = false;
 						//NProgress.done();
-						this.$message({
-							message: '删除成功',
-							type: 'success'
-						});
-						this.getUsers();
+						let {msg, code, data} = res;
+						debugger;
+						if(code == 0){
+							this.$message({
+								message: msg,
+								type: 'success'
+							});
+							this.getUsers();
+						}else{
+							this.$message({
+								message: msg,
+								type: 'error'
+							});
+						}
 					});
 				}).catch(() => {
 
@@ -257,6 +282,7 @@
 			//显示编辑界面
 			handleEdit: function (index, row) {
 				this.editFormVisible = true;
+				debugger;
 				this.editForm = Object.assign({}, row);
 			},
 			//显示新增界面
@@ -264,10 +290,10 @@
 				this.addFormVisible = true;
 				this.addForm = {
 					name: '',
-					sex: -1,
-					age: 0,
-					birth: '',
-					addr: ''
+					username: '',
+					mobile: '',
+					email: '',
+					password: ''
 				};
 			},
 			//编辑
@@ -342,14 +368,23 @@
 					this.listLoading = true;
 					//NProgress.start();
 					let para = { ids: ids };
-					batchRemoveUser(para).then((res) => {
+					batchRemoveUser(ids).then((res) => {
 						this.listLoading = false;
 						//NProgress.done();
-						this.$message({
-							message: '删除成功',
-							type: 'success'
-						});
-						this.getUsers();
+						let {msg, code, data} = res;
+						debugger;
+						if(code == 0){
+							this.$message({
+								message: msg,
+								type: 'success'
+							});
+							this.getUsers();
+						}else{
+							this.$message({
+								message: msg,
+								type: 'error'
+							});
+						}
 					});
 				}).catch(() => {
 
