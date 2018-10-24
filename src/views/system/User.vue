@@ -67,7 +67,7 @@
 		</el-dialog>
 
 		<!--新增界面-->
-		<el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" width="30%">
+		<el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible" :before-close="handleClose" width="30%">
 			<el-form :model="addForm" status-icon :rules="addFormRules" ref="addForm" label-width="80px" class="demo-ruleForm">
 				<el-form-item label="姓名" prop="name">
 					<el-input v-model="addForm.name" auto-complete="off"></el-input>

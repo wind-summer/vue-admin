@@ -2,7 +2,7 @@ import babelpolyfill from 'babel-polyfill'
 import Vue from 'vue'
 import App from './App'
 import ElementUI from 'element-ui'
-//import 'element-ui/lib/theme-dark/index.css'
+import 'element-ui/lib/theme-chalk/index.css';
 import './assets/theme/theme-darkblue/index.css'
 import VueRouter from 'vue-router'
 import store from './vuex/store'
