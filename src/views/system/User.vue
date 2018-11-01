@@ -27,7 +27,7 @@
 			</el-table-column>
 			<el-table-column prop="mobile" label="手机号" width="190" sortable>
 			</el-table-column>
-			<el-table-column prop="email" label="邮箱" width="300" sortable>
+			<el-table-column prop="email" label="邮箱" sortable>
 			</el-table-column>
 			<el-table-column label="操作" width="150" >
 				<template scope="scope">
@@ -73,7 +73,7 @@
 					<el-input v-model="addForm.name" auto-complete="off"></el-input>
 				</el-form-item>
 				<el-form-item label="账号" prop="username">
-					<el-input v-model="addForm.username" auto-complete="off"></el-input>
+					<el-input v-model="addForm.username" ></el-input>
 				</el-form-item>
 				<el-form-item label="密码" prop="password">
 					<el-input v-model="addForm.password" type="password" auto-complete="off"></el-input>
@@ -120,6 +120,7 @@
 	export default {
 		data() {
 			var checkPassword = (rule, value, callback) => {
+				debugger;
 				if (value === '') {
 					callback(new Error('请再次输入密码'));
 				} else if (value !== this.addForm.password) {
@@ -201,7 +202,7 @@
 						{ required: true, message: '请输入密码', trigger: 'blur' }
 					],
 					password2: [
-						{ validator: checkPassword, trigger: 'blur,change' }
+						{ validator: checkPassword, trigger: ['blur','change'] }
 					],
 					mobile: [
 						{ validator: checkMobile, trigger: 'blur' }
