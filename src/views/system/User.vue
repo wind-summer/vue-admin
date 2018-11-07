@@ -51,10 +51,10 @@
 					<el-input v-model="editForm.name" auto-complete="off"></el-input>
 				</el-form-item>
 				<el-form-item label="账号" prop="username">
-					<el-input v-model="editForm.username" auto-complete="off"></el-input>
+					<el-input v-model="editForm.username" auto-complete="off" :disabled="true"></el-input>
 				</el-form-item>
 				<el-form-item label="手机" prop="mobile">
-					<el-input v-model="editForm.mobile" auto-complete="off"></el-input>
+					<el-input v-model="editForm.mobile" auto-complete="off" maxlength="11"></el-input>
 				</el-form-item>
 				<el-form-item label="邮箱" prop="email">
 					<el-input v-model="editForm.email" auto-complete="off"></el-input>
@@ -82,7 +82,7 @@
 					<el-input v-model="addForm.password2" type="password" auto-complete="off"></el-input>
 				</el-form-item>
 				<el-form-item label="手机" prop="mobile">
-					<el-input v-model="addForm.mobile" auto-complete="off"></el-input>
+					<el-input v-model="addForm.mobile" auto-complete="off" maxlength="11"></el-input>
 				</el-form-item>
 				<el-form-item label="邮箱" prop="email">
 					<el-input v-model="addForm.email" auto-complete="off"></el-input>
@@ -120,7 +120,6 @@
 	export default {
 		data() {
 			var checkPassword = (rule, value, callback) => {
-				debugger;
 				if (value === '') {
 					callback(new Error('请再次输入密码'));
 				} else if (value !== this.addForm.password) {
@@ -131,7 +130,7 @@
 			};
 			var checkEmail = (rule, value, callback) => {
 				const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-				if (value === '') {
+				if (value === '' || value == null) {
 					callback();
 				} else if (!mailReg.test(value)) {
 					callback(new Error('邮箱格式不正确!'));
@@ -166,17 +165,11 @@
 					name: [
 						{ required: true, message: '请输入姓名', trigger: 'blur' }
 					],
-					username: [
-						{ required: true, message: '请输入账号', trigger: 'blur' }
-					],
-					password: [
-						{ required: true, message: '请输入密码', trigger: 'blur' }
-					],
-					password2: [
-						{ required: true, message: '请输入确认密码', trigger: 'blur' }
-					],
 					mobile: [
-						{ required: true, message: '请输入手机号', trigger: 'blur' }
+						{ validator: checkMobile, trigger: 'blur' }
+					],
+					email: [
+						{ validator: checkEmail, trigger: 'blur' }
 					]
 				},
 				//编辑界面数据
@@ -255,14 +248,12 @@
 				this.$confirm('确认删除该记录吗?', '提示', {
 					type: 'warning'
 				}).then(() => {
-					debugger;
 					this.listLoading = true;
 					//NProgress.start();
 					batchRemoveUser(row.id).then((res) => {
 						this.listLoading = false;
 						//NProgress.done();
 						let {msg, code, data} = res;
-						debugger;
 						if(code == 0){
 							this.$message({
 								message: msg,
@@ -283,7 +274,6 @@
 			//显示编辑界面
 			handleEdit: function (index, row) {
 				this.editFormVisible = true;
-				debugger;
 				this.editForm = Object.assign({}, row);
 			},
 			//显示新增界面
@@ -304,18 +294,26 @@
 						this.$confirm('确认提交吗？', '提示', {}).then(() => {
 							this.editLoading = true;
 							//NProgress.start();
-							let para = Object.assign({}, this.editForm);
-							para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
+							let para = this.editForm;
+							//para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
 							editUser(para).then((res) => {
 								this.editLoading = false;
-								//NProgress.done();
-								this.$message({
-									message: '提交成功',
-									type: 'success'
-								});
-								this.$refs['editForm'].resetFields();
-								this.editFormVisible = false;
-								this.getUsers();
+								let { msg, code, data } = res;
+								if(code == 0){
+									//NProgress.done();
+									this.$message({
+										message: msg,
+										type: 'success'
+									});
+									this.$refs['editForm'].resetFields();
+									this.editFormVisible = false;
+									this.getUsers();
+								}else{
+									this.$message({
+										message: msg,
+										type: 'error'
+									});
+								}
 							});
 						});
 					}

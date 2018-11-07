@@ -13,12 +13,10 @@ export const requestLogin = params => { return instance.post(`${base}/sys/login/
 export const getUserList = params => { return instance.get(`${base}/sys/user/users`, { params: params }); };
 export const getUserListPage = params => { return instance.get(`${base}/sys/user/users`, { params: params }); };
 export const addUser = params => { return instance.post(`${base}/sys/user/user`, params).then(res => res.data); };
+export const editUser = params => { return instance.put(`${base}/sys/user/user`,  params).then(res => res.data); };
 export const batchRemoveUser = params => { return instance.delete(`${base}/sys/user/user/${params}`, params).then(res => res.data); };
 
 export const removeUser = params => { return axios.delete(`${base}/user/remove`, { params: params }); };
-
-export const editUser = params => { return axios.put(`${base}/user/edit`, { params: params }); };
-
 
 
 // http request 请求拦截器，有token值则配置上token值
