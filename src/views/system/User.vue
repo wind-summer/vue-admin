@@ -29,9 +29,9 @@
 			</el-table-column>
 			<el-table-column prop="email" label="邮箱" sortable>
 			</el-table-column>
-			<el-table-column prop="status" label="状态" width="150" :filters="[{ text: '启用', value: 1 }, { text: '禁用', value: 0 }]" :filter-method="filterTag" filter-placement="bottom-end" sortable>
+			<el-table-column prop="status" label="状态" width="150" :filters="[{ text: '启用', value: 1 }, { text: '禁用', value: 0 }]" :filter-method="filterTag"  sortable>
 				<template slot-scope="scope">
-					<el-tag :type="scope.row.status === 1 ? 'success' : 'danger'" disable-transitions>{{scope.row.status}}</el-tag>
+					<el-tag :type="scope.row.status === 1 ? 'success' : 'danger'" disable-transitions ><div v-if="scope.row.status === 1">启用</div><div v-if="scope.row.status === 2">禁用</div></el-tag>
 				</template>
 			</el-table-column>
 			<el-table-column label="操作" width="150" >
@@ -72,25 +72,28 @@
 		</el-dialog>
 
 		<!--新增界面-->
-		<el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible" :before-close="handleClose" width="30%">
+		<el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible"  width="30%">
 			<el-form :model="addForm" status-icon :rules="addFormRules" ref="addForm" label-width="80px" class="demo-ruleForm">
 				<el-form-item label="姓名" prop="name">
-					<el-input v-model="addForm.name" auto-complete="off"></el-input>
+					<el-input v-model="addForm.name"></el-input>
 				</el-form-item>
 				<el-form-item label="账号" prop="username">
 					<el-input v-model="addForm.username" ></el-input>
 				</el-form-item>
 				<el-form-item label="密码" prop="password">
-					<el-input v-model="addForm.password" type="password" auto-complete="off"></el-input>
+					<el-input v-model="addForm.password" type="password"></el-input>
 				</el-form-item>
 				<el-form-item label="确认密码" prop="password2">
-					<el-input v-model="addForm.password2" type="password" auto-complete="off"></el-input>
+					<el-input v-model="addForm.password2" type="password"></el-input>
 				</el-form-item>
 				<el-form-item label="手机" prop="mobile">
-					<el-input v-model="addForm.mobile" auto-complete="off" maxlength="11"></el-input>
+					<el-input v-model="addForm.mobile" maxlength="11"></el-input>
 				</el-form-item>
 				<el-form-item label="邮箱" prop="email">
-					<el-input v-model="addForm.email" auto-complete="off"></el-input>
+					<el-input v-model="addForm.email" ></el-input>
+				</el-form-item>
+				<el-form-item label="状态" prop="status">
+					<el-switch width="40" active-text="启用" active-value="ENABLE" inactive-text="禁用" inactive-value="DISABLE" v-model="addForm.status" active-text="按月付费" inactive-text="按年付费"></el-switch>
 				</el-form-item>
 				<!-- <el-form-item label="性别">
 					<el-radio-group v-model="addForm.sex">
@@ -216,13 +219,15 @@
 					password: '',
 					password2: '',
 					mobile: '',
-					email: ''
+					email: '',
+					status: 'ENABLE'
 				}
 
 			}
 		},
 		methods: {
 			filterTag(value, row) {
+				debugger;
 				return row.status === value;
 			},
 			//性别显示转换
@@ -244,8 +249,8 @@
 				//NProgress.start();
 				getUserListPage(para).then((res) => {
 					this.total = res.data.total;
-          this.size = res.data.size;
-          this.current = res.data.current;
+          			this.size = res.data.size;
+          			this.current = res.data.current;
 					this.users = res.data.records;
 					this.listLoading = false;
 					//NProgress.done();
@@ -290,9 +295,11 @@
 				this.addForm = {
 					name: '',
 					username: '',
+					password: '',
+					password2: '',
 					mobile: '',
 					email: '',
-					password: ''
+					status: "ENABLE"
 				};
 			},
 			//编辑
