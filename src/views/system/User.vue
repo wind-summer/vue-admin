@@ -29,6 +29,11 @@
 			</el-table-column>
 			<el-table-column prop="email" label="邮箱" sortable>
 			</el-table-column>
+			<el-table-column prop="status" label="状态" width="150" :filters="[{ text: '启用', value: 1 }, { text: '禁用', value: 0 }]" :filter-method="filterTag" filter-placement="bottom-end" sortable>
+				<template slot-scope="scope">
+					<el-tag :type="scope.row.status === 1 ? 'success' : 'danger'" disable-transitions>{{scope.row.status}}</el-tag>
+				</template>
+			</el-table-column>
 			<el-table-column label="操作" width="150" >
 				<template scope="scope">
 					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -217,6 +222,9 @@
 			}
 		},
 		methods: {
+			filterTag(value, row) {
+				return row.status === value;
+			},
 			//性别显示转换
 			formatSex: function (row, column) {
 				return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
