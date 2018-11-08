@@ -31,7 +31,7 @@
 			</el-table-column>
 			<el-table-column prop="status" label="状态" width="150" :filters="[{ text: '启用', value: 1 }, { text: '禁用', value: 0 }]" :filter-method="filterTag"  sortable>
 				<template slot-scope="scope">
-					<el-tag :type="scope.row.status === 1 ? 'success' : 'danger'" disable-transitions ><div v-if="scope.row.status === 1">启用</div><div v-if="scope.row.status === 2">禁用</div></el-tag>
+					<el-tag :type="scope.row.status === 1 ? 'success' : 'danger'" disable-transitions ><div v-if="scope.row.status === 1">启用</div><div v-else-if="scope.row.status === 0">禁用</div></el-tag>
 				</template>
 			</el-table-column>
 			<el-table-column label="操作" width="150" >
@@ -64,6 +64,9 @@
 				<el-form-item label="邮箱" prop="email">
 					<el-input v-model="editForm.email" auto-complete="off"></el-input>
 				</el-form-item>
+				<el-form-item label="状态" prop="status">
+					<el-switch active-value="ENABLE" inactive-value="DISABLE" v-model="editForm.status"></el-switch>
+				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取消</el-button>
@@ -93,7 +96,7 @@
 					<el-input v-model="addForm.email" ></el-input>
 				</el-form-item>
 				<el-form-item label="状态" prop="status">
-					<el-switch width="40" active-text="启用" active-value="ENABLE" inactive-text="禁用" inactive-value="DISABLE" v-model="addForm.status" active-text="按月付费" inactive-text="按年付费"></el-switch>
+					<el-switch active-value="ENABLE" inactive-value="DISABLE" v-model="addForm.status"></el-switch>
 				</el-form-item>
 				<!-- <el-form-item label="性别">
 					<el-radio-group v-model="addForm.sex">
@@ -288,6 +291,11 @@
 			handleEdit: function (index, row) {
 				this.editFormVisible = true;
 				this.editForm = Object.assign({}, row);
+				if(row.status===1){
+					this.editForm.status = 'ENABLE';
+				}else{
+					this.editForm.status = 'DISABLE';
+				}
 			},
 			//显示新增界面
 			handleAdd: function () {
