@@ -39,7 +39,7 @@ let routes = [
         path: '/',
         component: Home,
         name: '导航一',
-        iconCls: 'el-icon-message',//图标样式class
+        iconCls: 'el-icon-mobile-phone',//图标样式class
         children: [
             //, hidden: true
             { path: '/main', component: Main, name: '主页' },
