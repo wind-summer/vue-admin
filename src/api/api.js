@@ -9,14 +9,15 @@ let base = 'http://localhost:8090/admin';
 //登录
 export const requestLogin = params => { return instance.post(`${base}/sys/login/sign_in`, params).then(res => res.data); };
 
-//用户管理相关接口
+//用户管理接口
 export const getUserList = params => { return instance.get(`${base}/sys/user/users`, { params: params }); };
 export const getUserListPage = params => { return instance.get(`${base}/sys/user/users`, { params: params }); };
 export const addUser = params => { return instance.post(`${base}/sys/user/user`, params).then(res => res.data); };
 export const editUser = params => { return instance.put(`${base}/sys/user/user`,  params).then(res => res.data); };
 export const batchRemoveUser = params => { return instance.delete(`${base}/sys/user/user/${params}`, params).then(res => res.data); };
 
-export const removeUser = params => { return axios.delete(`${base}/user/remove`, { params: params }); };
+//菜单管理接口
+export const getMenuList = params => { return instance.get(`${base}/sys/menus`, {}); };
 
 
 // http request 请求拦截器，有token值则配置上token值
