@@ -50,26 +50,29 @@
         <!--新增界面-->
 		<el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible"  width="40%">
 			<el-form :model="addForm" status-icon :rules="addFormRules" ref="addForm" label-width="80px" class="demo-ruleForm">
-                <el-form-item label="类型" prop="username">
-					<el-input v-model="addForm.username" ></el-input>
+                <el-form-item label="类型">
+					<el-radio-group v-model="addForm.type">
+						<el-radio label="MENU">菜单</el-radio>
+						<el-radio label="BUTTON">按钮</el-radio>
+					</el-radio-group>
 				</el-form-item>
 				<el-form-item label="名称" prop="name">
 					<el-input v-model="addForm.name"></el-input>
 				</el-form-item>
-				<el-form-item label="上级菜单" prop="password">
-					<el-input v-model="addForm.password" type="password"></el-input>
+				<el-form-item label="上级菜单" prop="parentId">
+					<el-input v-model="addForm.parentId"></el-input>
 				</el-form-item>
-				<el-form-item label="路由" prop="password2">
-					<el-input v-model="addForm.password2" type="password"></el-input>
+				<el-form-item label="路由" prop="url">
+					<el-input v-model="addForm.url"></el-input>
 				</el-form-item>
-				<el-form-item label="排序" prop="mobile">
-					<el-input v-model="addForm.mobile" maxlength="11"></el-input>
+				<el-form-item label="排序" prop="orderNum">
+					<el-input-number v-model="addForm.orderNum" controls-position="right" :min="0" :max="1000"></el-input-number>
 				</el-form-item>
-				<el-form-item label="授权表示" prop="email">
-					<el-input v-model="addForm.email" ></el-input>
+				<el-form-item label="授权表示" prop="perms">
+					<el-input v-model="addForm.perms" ></el-input>
 				</el-form-item>
-				<el-form-item label="图标" prop="status">
-					<el-switch active-value="ENABLE" inactive-value="DISABLE" v-model="addForm.status"></el-switch>
+				<el-form-item label="图标" prop="icon">
+					<el-input v-model="addForm.icon" ></el-input>
 				</el-form-item>
 				<!-- <el-form-item label="性别">
 					<el-radio-group v-model="addForm.sex">
@@ -88,8 +91,8 @@
 				</el-form-item> -->
 			</el-form>
 			<div slot="footer" class="dialog-footer">
-				<!-- <el-button @click.native="addFormVisible = false">取消</el-button>
-				<el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button> -->
+				<el-button @click.native="addFormVisible = false">取消</el-button>
+				<el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
 			</div>
 		</el-dialog>
     </section>
@@ -126,8 +129,8 @@
 				},
 				//新增界面数据
 				addForm: {
-					name: '',
-					username: '',
+					type: 'MENU',
+					orderNum: 0,
 					password: '',
 					password2: '',
 					mobile: '',
@@ -148,15 +151,18 @@
 			handleAdd: function () {
 				this.addFormVisible = true;
 				this.addForm = {
-					name: '',
-					username: '',
+					type: 'MENU',
+					orderNum: 0,
 					password: '',
 					password2: '',
 					mobile: '',
 					email: '',
 					status: "ENABLE"
 				};
-            },
+			},
+			addSubmit: function(){
+				alert(1);
+			},
             //显示编辑界面
 			handleEdit: function (index, row) {
 				this.editFormVisible = true;
