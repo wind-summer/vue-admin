@@ -108,18 +108,18 @@
                 addFormVisible: false,//新增界面是否显示
 				addLoading: false,
 				addFormRules: {
-					// name: [
-					// 	{ required: true, message: '请输入姓名', trigger: 'blur' }
-					// ],
-					// username: [
-					// 	{ required: true, message: '请输入账号', trigger: 'blur' }
-					// ],
-					// password: [
-					// 	{ required: true, message: '请输入密码', trigger: 'blur' }
-					// ],
-					// password2: [
-					// 	{ validator: checkPassword, trigger: ['blur','change'] }
-					// ],
+					name: [
+						{ required: true, message: '请输入菜单名称', trigger: 'blur' }
+					],
+					type: [
+						{ required: true, message: '类型不能为空', trigger: 'blur' }
+					],
+					parentId: [
+						{ required: true, message: '上级菜单不能为空', trigger: 'blur' }
+					],
+					orderNum: [
+						{ required: true, message: '排序不能为空', trigger: 'blur' }
+					],
 					// mobile: [
 					// 	{ validator: checkMobile, trigger: 'blur' }
 					// ],
@@ -153,7 +153,7 @@
 				this.addForm = {
 					type: 'MENU',
 					orderNum: 0,
-					password: '',
+					parentId: 0,
 					password2: '',
 					mobile: '',
 					email: '',
@@ -161,7 +161,39 @@
 				};
 			},
 			addSubmit: function(){
-				alert(1);
+				this.$refs.addForm.validate((valid) => {
+					if (valid) {
+						this.$confirm('确认提交吗？', '提示', {}).then(() => {
+							this.addLoading = true;
+							//NProgress.start();
+							//var addParams = { name: this.addForm.name, username: this.addForm.username, password: this.addForm.password, mobile: this.addForm.mobile, email: this.addForm.email };
+							let para = this.addForm;
+							//para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
+							addUser(para).then((res,error) => {
+								this.addLoading = false;
+								let { msg, code, data } = res;
+								if(code == 0){
+									//NProgress.done();
+									this.$message({
+										message: msg,
+										type: 'success'
+									});
+									this.$refs['addForm'].resetFields();
+									this.addFormVisible = false;
+									this.getUsers();
+								}else{
+									this.$message({
+										message: msg,
+										type: 'error'
+									});
+									//this.$refs['addForm'].resetFields();
+									//this.addFormVisible = false;
+									//this.getUsers();
+								}
+							});
+						});
+					}
+				});
 			},
             //显示编辑界面
 			handleEdit: function (index, row) {
