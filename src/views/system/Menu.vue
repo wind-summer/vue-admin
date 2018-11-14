@@ -56,11 +56,18 @@
 						<el-radio label="BUTTON">按钮</el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="名称" prop="name">
+				<el-form-item label="名称" prop="name" >
 					<el-input v-model="addForm.name"></el-input>
 				</el-form-item>
-				<el-form-item label="上级菜单" prop="parentId">
-					<el-input v-model="addForm.parentId"></el-input>
+				<el-input v-model="addForm.parentId" type="hidden"></el-input>
+				<!-- <el-form-item label="上级菜单">
+					<el-select v-model="addForm.parentId" placeholder="请选择活动区域" inline="true">
+					<el-option label="区域一" value="1"></el-option>
+					<el-option label="区域二" value="2"></el-option>
+					</el-select>
+				</el-form-item> -->
+				<el-form-item label="上级菜单" prop="parentName">
+					<el-input v-model="addForm.parentName" @click.native="selectParentMenu"></el-input>
 				</el-form-item>
 				<el-form-item label="路由" prop="url">
 					<el-input v-model="addForm.url"></el-input>
@@ -74,32 +81,51 @@
 				<el-form-item label="图标" prop="icon">
 					<el-input v-model="addForm.icon" ></el-input>
 				</el-form-item>
-				<!-- <el-form-item label="性别">
-					<el-radio-group v-model="addForm.sex">
-						<el-radio class="radio" :label="1">男</el-radio>
-						<el-radio class="radio" :label="0">女</el-radio>
-					</el-radio-group>
-				</el-form-item>
-				<el-form-item label="年龄">
-					<el-input-number v-model="addForm.age" :min="0" :max="200"></el-input-number>
-				</el-form-item>
-				<el-form-item label="生日">
-					<el-date-picker type="date" placeholder="选择日期" v-model="addForm.birth"></el-date-picker>
-				</el-form-item>
-				<el-form-item label="地址">
-					<el-input type="textarea" v-model="addForm.addr"></el-input>
-				</el-form-item> -->
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="addFormVisible = false">取消</el-button>
 				<el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
 			</div>
 		</el-dialog>
+
+		<!--编辑界面-->
+		<el-dialog title="编辑" v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false">
+			<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+				<el-form-item label="类型">
+					<el-radio-group v-model="editForm.type">
+						<el-radio label="MENU">菜单</el-radio>
+						<el-radio label="BUTTON">按钮</el-radio>
+					</el-radio-group>
+				</el-form-item>
+				<el-form-item label="名称" prop="name">
+					<el-input v-model="editForm.name"></el-input>
+				</el-form-item>
+				<el-form-item label="上级菜单" prop="parentId">
+					<el-input v-model="editForm.parentId"></el-input>
+				</el-form-item>
+				<el-form-item label="路由" prop="url">
+					<el-input v-model="editForm.url"></el-input>
+				</el-form-item>
+				<el-form-item label="排序" prop="orderNum">
+					<el-input-number v-model="editForm.orderNum" controls-position="right" :min="0" :max="1000"></el-input-number>
+				</el-form-item>
+				<el-form-item label="授权表示" prop="perms">
+					<el-input v-model="editForm.perms" ></el-input>
+				</el-form-item>
+				<el-form-item label="图标" prop="icon">
+					<el-input v-model="editForm.icon" ></el-input>
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<!-- <el-button @click.native="editFormVisible = false">取消</el-button>
+				<el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button> -->
+			</div>
+		</el-dialog>
     </section>
 </template>
 
 <script>
-    import { getMenuList } from '../../api/api';
+    import { getMenuList, addMenu } from '../../api/api';
     export default {
         data() {
             return {
@@ -130,16 +156,51 @@
 				//新增界面数据
 				addForm: {
 					type: 'MENU',
+					name: '',
 					orderNum: 0,
-					password: '',
-					password2: '',
-					mobile: '',
-					email: '',
-					status: 'ENABLE'
+					parentId: 0,
+					url: '',
+					perms: '',
+					icon: '',
+				},
+				editFormVisible: false,//新增界面是否显示
+				editLoading: false,
+				editFormRules: {
+					name: [
+						{ required: true, message: '请输入菜单名称', trigger: 'blur' }
+					],
+					type: [
+						{ required: true, message: '类型不能为空', trigger: 'blur' }
+					],
+					parentId: [
+						{ required: true, message: '上级菜单不能为空', trigger: 'blur' }
+					],
+					orderNum: [
+						{ required: true, message: '排序不能为空', trigger: 'blur' }
+					],
+					// mobile: [
+					// 	{ validator: checkMobile, trigger: 'blur' }
+					// ],
+					// email: [
+					// 	{ validator: checkEmail, trigger: 'blur' }
+					// ]
+				},
+				//新增界面数据
+				editForm: {
+					type: 'MENU',
+					name: '',
+					orderNum: 0,
+					parentId: 0,
+					url: '',
+					perms: '',
+					icon: '',
 				}
             }
         },
 		methods: {
+			selectParentMenu(){
+				alert(1);
+			},
             getMenus(){
                 this.listLoading = true;
 				getMenuList().then((res) => {
@@ -152,12 +213,12 @@
 				this.addFormVisible = true;
 				this.addForm = {
 					type: 'MENU',
+					name: '',
 					orderNum: 0,
 					parentId: 0,
-					password2: '',
-					mobile: '',
-					email: '',
-					status: "ENABLE"
+					url: '',
+					perms: '',
+					icon: '',
 				};
 			},
 			addSubmit: function(){
@@ -169,7 +230,7 @@
 							//var addParams = { name: this.addForm.name, username: this.addForm.username, password: this.addForm.password, mobile: this.addForm.mobile, email: this.addForm.email };
 							let para = this.addForm;
 							//para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-							addUser(para).then((res,error) => {
+							addMenu(para).then((res,error) => {
 								this.addLoading = false;
 								let { msg, code, data } = res;
 								if(code == 0){
@@ -180,7 +241,7 @@
 									});
 									this.$refs['addForm'].resetFields();
 									this.addFormVisible = false;
-									this.getUsers();
+									this.getMenus();
 								}else{
 									this.$message({
 										message: msg,
@@ -199,10 +260,10 @@
 			handleEdit: function (index, row) {
 				this.editFormVisible = true;
 				this.editForm = Object.assign({}, row);
-				if(row.status===1){
-					this.editForm.status = 'ENABLE';
-				}else{
-					this.editForm.status = 'DISABLE';
+				if(row.type === 0){
+					this.editForm.type = 'MENU';
+				}else if(row.type === 1){
+					this.editForm.type = 'BUTTON';
 				}
 			},
         },

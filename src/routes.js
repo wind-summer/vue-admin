@@ -33,8 +33,8 @@ let routes = [
         iconCls: 'el-icon-setting',//图标样式class
         children: [
             //, hidden: true
-            { path: '/user', component: User, name: '用户管理' },
-            { path: '/menu', component: Menu, name: '菜单管理' }
+            { path: '/user', component: User, name: '用户管理', iconCls: 'el-icon-menu' },
+            { path: '/menu', component: Menu, name: '菜单管理', iconCls: 'el-icon-menu' }
         ]
     },
     {
