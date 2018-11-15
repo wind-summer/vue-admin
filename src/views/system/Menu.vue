@@ -49,15 +49,15 @@
 
         <!--新增界面-->
 		<el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible"  width="40%">
-			<el-form :model="addForm" status-icon :rules="addFormRules" ref="addForm" label-width="80px" class="demo-ruleForm">
+			<el-form :model="addForm" :rules="addFormRules" ref="addForm" label-width="80px" class="demo-ruleForm">
                 <el-form-item label="类型">
 					<el-radio-group v-model="addForm.type">
 						<el-radio label="MENU">菜单</el-radio>
 						<el-radio label="BUTTON">按钮</el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="名称" prop="name" >
-					<el-input v-model="addForm.name"></el-input>
+				<el-form-item label="名称" prop="name" placement="top" >
+					<el-input v-model="addForm.name" ></el-input>
 				</el-form-item>
 				<el-input v-model="addForm.parentId" type="hidden"></el-input>
 				<!-- <el-form-item label="上级菜单">
@@ -67,7 +67,7 @@
 					</el-select>
 				</el-form-item> -->
 				<el-form-item label="上级菜单" prop="parentName">
-					<el-input v-model="addForm.parentName" @click.native="selectParentMenu"></el-input>
+					<el-input v-model="addForm.parentName" @click.native="selectParentMenu" clearable @clear="clearParentMenu"></el-input>
 				</el-form-item>
 				<el-form-item label="路由" prop="url">
 					<el-input v-model="addForm.url"></el-input>
@@ -159,6 +159,7 @@
 					name: '',
 					orderNum: 0,
 					parentId: 0,
+					parentName: '',
 					url: '',
 					perms: '',
 					icon: '',
@@ -191,6 +192,7 @@
 					name: '',
 					orderNum: 0,
 					parentId: 0,
+					parentName: '一级菜单',
 					url: '',
 					perms: '',
 					icon: '',
@@ -199,7 +201,12 @@
         },
 		methods: {
 			selectParentMenu(){
-				alert(1);
+				//alert(1);
+			},
+			clearParentMenu(){
+				debugger;
+				this.addForm.parentId=0;
+				this.addForm.parentName="一级菜单";
 			},
             getMenus(){
                 this.listLoading = true;
@@ -216,6 +223,7 @@
 					name: '',
 					orderNum: 0,
 					parentId: 0,
+					parentName: '一级菜单',
 					url: '',
 					perms: '',
 					icon: '',
