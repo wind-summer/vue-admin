@@ -59,13 +59,16 @@
 				<el-form-item label="名称" prop="name" placement="top" >
 					<el-input v-model="addForm.name" ></el-input>
 				</el-form-item>
-				<el-input v-model="addForm.parentId" type="hidden"></el-input>
+				<el-form-item label="上级菜单" prop="parent" placement="top" >
+					<el-cascader :options="options" change-on-select></el-cascader>
+				</el-form-item>
 				<!-- <el-form-item label="上级菜单">
 					<el-select v-model="addForm.parentId" placeholder="请选择活动区域" inline="true">
 					<el-option label="区域一" value="1"></el-option>
 					<el-option label="区域二" value="2"></el-option>
 					</el-select>
 				</el-form-item> -->
+				<el-input v-model="addForm.parentId" type="hidden"></el-input>
 				<el-form-item label="上级菜单" prop="parentName">
 					<el-input v-model="addForm.parentName" @click.native="selectParentMenu" clearable @clear="clearParentMenu"></el-input>
 				</el-form-item>
