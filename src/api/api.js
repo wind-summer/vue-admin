@@ -18,6 +18,7 @@ export const batchRemoveUser = params => { return instance.delete(`${base}/sys/u
 
 //菜单管理接口
 export const getMenuList = params => { return instance.get(`${base}/sys/menus`, {}); };
+export const getParentTrees = params => { return instance.get(`${base}/sys/menu/parentTrees`, {}); };
 export const addMenu = params => { return instance.post(`${base}/sys/menu`, params).then(res => res.data); };
 
 // http request 请求拦截器，有token值则配置上token值

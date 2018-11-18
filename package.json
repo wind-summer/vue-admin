@@ -10,14 +10,15 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@riophae/vue-treeselect": "^0.0.37",
     "axios": "^0.15.3",
     "echarts": "^3.3.2",
     "element-ui": "^2.4.9",
     "font-awesome": "^4.7.0",
     "nprogress": "^0.2.0",
-    "vuex": "^2.0.0-rc.6",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vuex": "^2.0.0-rc.6"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",

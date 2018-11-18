@@ -59,19 +59,22 @@
 				<el-form-item label="名称" prop="name" placement="top" >
 					<el-input v-model="addForm.name" ></el-input>
 				</el-form-item>
-				<el-form-item label="上级菜单" prop="parent" placement="top" >
-					<el-cascader :options="options" change-on-select></el-cascader>
+				<el-form-item label="名称11" prop="parentId" placement="top" >
+					<treeselect v-model="addForm.parentId" :multiple="false" :options="parentMenus" placeholder="一级菜单"></treeselect>
 				</el-form-item>
+				<!-- <el-form-item label="上级菜单" prop="parentId" placement="top" >
+					<el-cascader v-model="addForm.parentId" :options="parentMenus" change-on-select clearable expand-trigger="hover" placeholder="一级菜单"></el-cascader>
+				</el-form-item> -->
 				<!-- <el-form-item label="上级菜单">
 					<el-select v-model="addForm.parentId" placeholder="请选择活动区域" inline="true">
 					<el-option label="区域一" value="1"></el-option>
 					<el-option label="区域二" value="2"></el-option>
 					</el-select>
 				</el-form-item> -->
-				<el-input v-model="addForm.parentId" type="hidden"></el-input>
+				<!-- <el-input v-model="addForm.parentId" type="hidden"></el-input>
 				<el-form-item label="上级菜单" prop="parentName">
 					<el-input v-model="addForm.parentName" @click.native="selectParentMenu" clearable @clear="clearParentMenu"></el-input>
-				</el-form-item>
+				</el-form-item> -->
 				<el-form-item label="路由" prop="url">
 					<el-input v-model="addForm.url"></el-input>
 				</el-form-item>
@@ -128,12 +131,19 @@
 </template>
 
 <script>
-    import { getMenuList, addMenu } from '../../api/api';
+	import { getMenuList, addMenu, getParentTrees } from '../../api/api';
+	// import the component
+	import Treeselect from '@riophae/vue-treeselect'
+	// import the styles
+	import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+
     export default {
+		components: { Treeselect },
         data() {
             return {
                 listLoading: false,
-                menus: [],
+				menus: [],
+				parentMenus:[],
                 addFormVisible: false,//新增界面是否显示
 				addLoading: false,
 				addFormRules: {
@@ -196,6 +206,7 @@
 					orderNum: 0,
 					parentId: 0,
 					parentName: '一级菜单',
+					parent: '一级菜单',
 					url: '',
 					perms: '',
 					icon: '',
@@ -207,7 +218,6 @@
 				//alert(1);
 			},
 			clearParentMenu(){
-				debugger;
 				this.addForm.parentId=0;
 				this.addForm.parentName="一级菜单";
 			},
@@ -217,16 +227,21 @@
                     this.listLoading = false;
                     this.menus = res.data;
 				});
+			},
+			getParentTrees(){
+				getParentTrees().then((res) => {
+                    this.parentMenus = res.data;
+				});
             },
 			//显示新增界面
 			handleAdd: function () {
+				this.getParentTrees();
 				this.addFormVisible = true;
 				this.addForm = {
 					type: 'MENU',
 					name: '',
 					orderNum: 0,
-					parentId: 0,
-					parentName: '一级菜单',
+					//parentId: 0,
 					url: '',
 					perms: '',
 					icon: '',
@@ -240,6 +255,17 @@
 							//NProgress.start();
 							//var addParams = { name: this.addForm.name, username: this.addForm.username, password: this.addForm.password, mobile: this.addForm.mobile, email: this.addForm.email };
 							let para = this.addForm;
+							debugger;
+							// var newParentId;
+							// if(this.addForm.parentId == ''){
+							// 	newParentId = 0;
+							// }else if(this.addForm.parentId != 0){
+							// 	newParentId = this.addForm.parentId[this.addForm.parentId.length-1];
+							// }else{
+							// 	newParentId = 0;
+							// }
+
+							// para.parentId=newParentId;
 							//para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
 							addMenu(para).then((res,error) => {
 								this.addLoading = false;
