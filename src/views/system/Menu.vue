@@ -19,6 +19,70 @@
 			</el-table-column> -->
 			<!-- <el-table-column type="index" width="60">
 			</el-table-column> -->
+			<!-- <div v-if="scope.row.children != null">启用</div> -->
+			<el-table-column type="expand">
+				<template slot-scope="props">
+					<el-table :data="props.row.children" :show-header=false>
+						
+
+
+						<el-table-column prop="name" label="名称"  sortable>
+						</el-table-column>
+						<el-table-column prop="icon" label="图标"  sortable>
+							<template slot-scope="scope">
+								<i :class="scope.row.icon"></i>
+							</template>
+						</el-table-column>
+						<el-table-column prop="type" label="类型"  sortable>
+							<template slot-scope="scope">
+								<div v-if="scope.row.type === 0"><el-tag type="" disable-transitions >菜单</el-tag></div>
+								<div v-else-if="scope.row.type === 1"><el-tag type="success" disable-transitions >按钮</el-tag></div>
+							</template>
+						</el-table-column>
+						<el-table-column prop="orderNum" label="排序"  sortable>
+						</el-table-column>
+						<el-table-column prop="url" label="路由"  sortable>
+						</el-table-column>
+						<el-table-column prop="perms" label="授权标识" sortable>
+						</el-table-column>
+						<el-table-column label="操作"  >
+							<template slot-scope="scope">
+								<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+								<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+							</template>
+						</el-table-column>
+
+
+
+
+					</el-table>
+				</template>
+				<!-- <template slot-scope="props">
+					<el-form label-position="left" inline class="demo-table-expand">
+					<el-form-item label="商品名称">
+						<span>{{ props.row.name }}</span>
+					</el-form-item>
+					<el-form-item label="所属店铺">
+						<span>{{ props.row.shop }}</span>
+					</el-form-item>
+					<el-form-item label="商品 ID">
+						<span>{{ props.row.id }}</span>
+					</el-form-item>
+					<el-form-item label="店铺 ID">
+						<span>{{ props.row.shopId }}</span>
+					</el-form-item>
+					<el-form-item label="商品分类">
+						<span>{{ props.row.category }}</span>
+					</el-form-item>
+					<el-form-item label="店铺地址">
+						<span>{{ props.row.address }}</span>
+					</el-form-item>
+					<el-form-item label="商品描述">
+						<span>{{ props.row.desc }}</span>
+					</el-form-item>
+					</el-form>
+				</template> -->
+			</el-table-column>
 			<el-table-column prop="name" label="名称" width="150" sortable>
 			</el-table-column>
 			<el-table-column prop="icon" label="图标" width="100" sortable>
@@ -98,16 +162,16 @@
 		<el-dialog title="编辑" v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false">
 			<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
 				<el-form-item label="类型">
-					<el-radio-group v-model="editForm.type">
+					<el-radio-group disabled v-model="editForm.type">
 						<el-radio label="MENU">菜单</el-radio>
 						<el-radio label="BUTTON">按钮</el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="名称" prop="name">
-					<el-input v-model="editForm.name"></el-input>
+				<el-form-item label="名称" prop="name" placement="top" >
+					<el-input v-model="editForm.name" ></el-input>
 				</el-form-item>
-				<el-form-item label="上级菜单" prop="parentId">
-					<el-input v-model="editForm.parentId"></el-input>
+				<el-form-item label="名称11" prop="parentId" placement="top" >
+					<treeselect v-model="editForm.parentId" :multiple="false" disabled :options="parentMenus" placeholder="一级菜单"></treeselect>
 				</el-form-item>
 				<el-form-item label="路由" prop="url">
 					<el-input v-model="editForm.url"></el-input>
@@ -123,15 +187,15 @@
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
-				<!-- <el-button @click.native="editFormVisible = false">取消</el-button>
-				<el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button> -->
+				<el-button @click.native="editFormVisible = false">取消</el-button>
+				<el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
 			</div>
 		</el-dialog>
     </section>
 </template>
 
 <script>
-	import { getMenuList, addMenu, getParentTrees } from '../../api/api';
+	import { getMenuList, addMenu, getParentTrees , editMenu , deleteMenu } from '../../api/api';
 	// import the component
 	import Treeselect from '@riophae/vue-treeselect'
 	// import the styles
@@ -153,25 +217,16 @@
 					type: [
 						{ required: true, message: '类型不能为空', trigger: 'blur' }
 					],
-					parentId: [
-						{ required: true, message: '上级菜单不能为空', trigger: 'blur' }
-					],
 					orderNum: [
 						{ required: true, message: '排序不能为空', trigger: 'blur' }
 					],
-					// mobile: [
-					// 	{ validator: checkMobile, trigger: 'blur' }
-					// ],
-					// email: [
-					// 	{ validator: checkEmail, trigger: 'blur' }
-					// ]
 				},
 				//新增界面数据
 				addForm: {
 					type: 'MENU',
 					name: '',
 					orderNum: 0,
-					parentId: 0,
+					parentId: 1,
 					parentName: '',
 					url: '',
 					perms: '',
@@ -186,27 +241,16 @@
 					type: [
 						{ required: true, message: '类型不能为空', trigger: 'blur' }
 					],
-					parentId: [
-						{ required: true, message: '上级菜单不能为空', trigger: 'blur' }
-					],
 					orderNum: [
 						{ required: true, message: '排序不能为空', trigger: 'blur' }
 					],
-					// mobile: [
-					// 	{ validator: checkMobile, trigger: 'blur' }
-					// ],
-					// email: [
-					// 	{ validator: checkEmail, trigger: 'blur' }
-					// ]
 				},
 				//新增界面数据
 				editForm: {
 					type: 'MENU',
 					name: '',
 					orderNum: 0,
-					parentId: 0,
-					parentName: '一级菜单',
-					parent: '一级菜单',
+					parentId: null,
 					url: '',
 					perms: '',
 					icon: '',
@@ -214,13 +258,6 @@
             }
         },
 		methods: {
-			selectParentMenu(){
-				//alert(1);
-			},
-			clearParentMenu(){
-				this.addForm.parentId=0;
-				this.addForm.parentName="一级菜单";
-			},
             getMenus(){
                 this.listLoading = true;
 				getMenuList().then((res) => {
@@ -302,6 +339,64 @@
 				}else if(row.type === 1){
 					this.editForm.type = 'BUTTON';
 				}
+				if(row.parentId === 0){
+					this.editForm.parentId = null;
+				}
+				this.getParentTrees();
+			},
+			editSubmit: function(){
+				this.$refs.editForm.validate((valid) => {
+					if (valid) {
+						this.$confirm('确认提交吗？', '提示', {}).then(() => {
+							this.editLoading = true;
+							let para = this.editForm;
+							editMenu(para).then((res,error) => {
+								this.editLoading = false;
+								let { msg, code, data } = res;
+								if(code == 0){
+									this.$message({
+										message: msg,
+										type: 'success'
+									});
+									//this.$refs['addForm'].resetFields();
+									this.editFormVisible = false;
+									this.getMenus();
+								}else{
+									this.$message({
+										message: msg,
+										type: 'error'
+									});
+								}
+							});
+						});
+					}
+				});
+			},
+			//删除
+			handleDel: function (index, row) {
+				this.$confirm('确认删除该记录吗?', '提示', {
+					type: 'warning'
+				}).then(() => {
+					this.listLoading = true;
+					deleteMenu(row.id).then((res) => {
+						this.listLoading = false;
+						let {msg, code, data} = res;
+						if(code == 0){
+							this.$message({
+								message: msg,
+								type: 'success'
+							});
+							this.getMenus();
+						}else{
+							this.$message({
+								message: msg,
+								type: 'error'
+							});
+						}
+					});
+				}).catch(() => {
+
+				});
 			},
         },
 		mounted() {
