@@ -52,7 +52,7 @@
 				<el-form-item label="名称" prop="name" placement="top" >
 					<el-input v-model="addForm.name" ></el-input>
 				</el-form-item>
-				<el-form-item label="名称" prop="parentId" placement="top" >
+				<el-form-item label="名称11" prop="parentId" placement="top" >
 					<treeselect v-model="addForm.parentId" :multiple="false" :options="parentMenus" placeholder="一级菜单"></treeselect>
 				</el-form-item>
 				<el-form-item label="路由" prop="url">
@@ -86,7 +86,7 @@
 				<el-form-item label="名称" prop="name" placement="top" >
 					<el-input v-model="editForm.name" ></el-input>
 				</el-form-item>
-				<el-form-item label="名称" prop="parentId" placement="top" >
+				<el-form-item label="名称11" prop="parentId" placement="top" >
 					<treeselect v-model="editForm.parentId" :multiple="false" disabled :options="parentMenus" placeholder="一级菜单"></treeselect>
 				</el-form-item>
 				<el-form-item label="路由" prop="url">
@@ -117,7 +117,6 @@
 	// import the styles
 	import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 	import transfer from "@/common/js/tree-data-transfer";
-	import '@/assets/icon/iconfont.css'
 
     export default {
 		components: { Treeselect },

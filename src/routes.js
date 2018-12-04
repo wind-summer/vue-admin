@@ -6,6 +6,7 @@ import Table from './views/nav1/Table.vue'
 import Form from './views/nav1/Form.vue'
 import Users from './views/nav1/User.vue'
 import User from './views/system/User.vue'
+import Role from './views/system/Role.vue'
 import Menu from './views/system/Menu.vue'
 import Page4 from './views/nav2/Page4.vue'
 import Page5 from './views/nav2/Page5.vue'
@@ -34,7 +35,8 @@ let routes = [
         children: [
             //, hidden: true
             { path: '/user', component: User, name: '用户管理', iconCls: 'el-icon-menu' },
-            { path: '/menu', component: Menu, name: '菜单管理', iconCls: 'el-icon-menu' }
+            { path: '/role', component: Role, name: '角色管理', iconCls: 'el-icon-menu' },
+            { path: '/menu', component: Menu, name: '菜单管理', iconCls: 'el-icon-menu' },
         ]
     },
     {
