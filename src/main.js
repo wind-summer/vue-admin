@@ -12,6 +12,9 @@ import Vuex from 'vuex'
 import routes from './routes'
 import Mock from './mock'
 
+import ElTreeGrid from "element-tree-grid/dist/tree-table.js";
+Vue.component(ElTreeGrid.name, ElTreeGrid);
+
 
 Mock.bootstrap();
 import 'font-awesome/css/font-awesome.min.css'

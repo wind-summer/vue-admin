@@ -13,84 +13,13 @@
 		</el-col>
 
         <!--列表-->
-        <!-- @selection-change="selsChange" -->
-		<el-table :data="menus" highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<!-- <el-table-column type="selection" width="55">
-			</el-table-column> -->
-			<!-- <el-table-column type="index" width="60">
-			</el-table-column> -->
-			<!-- <div v-if="scope.row.children != null">启用</div> -->
-			<el-table-column type="expand">
-				<template slot-scope="props">
-					<el-table :data="props.row.children" :show-header=false>
-						
-
-
-						<el-table-column prop="name" label="名称"  sortable>
-						</el-table-column>
-						<el-table-column prop="icon" label="图标"  sortable>
-							<template slot-scope="scope">
-								<i :class="scope.row.icon"></i>
-							</template>
-						</el-table-column>
-						<el-table-column prop="type" label="类型"  sortable>
-							<template slot-scope="scope">
-								<div v-if="scope.row.type === 0"><el-tag type="" disable-transitions >菜单</el-tag></div>
-								<div v-else-if="scope.row.type === 1"><el-tag type="success" disable-transitions >按钮</el-tag></div>
-							</template>
-						</el-table-column>
-						<el-table-column prop="orderNum" label="排序"  sortable>
-						</el-table-column>
-						<el-table-column prop="url" label="路由"  sortable>
-						</el-table-column>
-						<el-table-column prop="perms" label="授权标识" sortable>
-						</el-table-column>
-						<el-table-column label="操作"  >
-							<template slot-scope="scope">
-								<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-								<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
-							</template>
-						</el-table-column>
-
-
-
-
-					</el-table>
-				</template>
-				<!-- <template slot-scope="props">
-					<el-form label-position="left" inline class="demo-table-expand">
-					<el-form-item label="商品名称">
-						<span>{{ props.row.name }}</span>
-					</el-form-item>
-					<el-form-item label="所属店铺">
-						<span>{{ props.row.shop }}</span>
-					</el-form-item>
-					<el-form-item label="商品 ID">
-						<span>{{ props.row.id }}</span>
-					</el-form-item>
-					<el-form-item label="店铺 ID">
-						<span>{{ props.row.shopId }}</span>
-					</el-form-item>
-					<el-form-item label="商品分类">
-						<span>{{ props.row.category }}</span>
-					</el-form-item>
-					<el-form-item label="店铺地址">
-						<span>{{ props.row.address }}</span>
-					</el-form-item>
-					<el-form-item label="商品描述">
-						<span>{{ props.row.desc }}</span>
-					</el-form-item>
-					</el-form>
-				</template> -->
-			</el-table-column>
-			<el-table-column prop="name" label="名称" width="150" sortable>
-			</el-table-column>
-			<el-table-column prop="icon" label="图标" width="100" sortable>
+		<el-table :data="menus" border highlight-current-row v-loading="listLoading"  style="width: 100%;">
+			<el-table-tree-column prop="name" label="菜单名称" tree-key="id" parent-key="parentId" child-key="children"></el-table-tree-column>
+			<el-table-column prop="icon" align="center" label="图标" width="100" sortable>
                 <template slot-scope="scope">
                     <i :class="scope.row.icon"></i>
                 </template>
 			</el-table-column>
-            <!-- :filters="[{ text: '启用', value: 1 }, { text: '禁用', value: 0 }]" :filter-method="filterTag" -->
 			<el-table-column prop="type" label="类型" width="100" sortable>
 				<template slot-scope="scope">
                     <div v-if="scope.row.type === 0"><el-tag type="" disable-transitions >菜单</el-tag></div>
@@ -126,19 +55,6 @@
 				<el-form-item label="名称11" prop="parentId" placement="top" >
 					<treeselect v-model="addForm.parentId" :multiple="false" :options="parentMenus" placeholder="一级菜单"></treeselect>
 				</el-form-item>
-				<!-- <el-form-item label="上级菜单" prop="parentId" placement="top" >
-					<el-cascader v-model="addForm.parentId" :options="parentMenus" change-on-select clearable expand-trigger="hover" placeholder="一级菜单"></el-cascader>
-				</el-form-item> -->
-				<!-- <el-form-item label="上级菜单">
-					<el-select v-model="addForm.parentId" placeholder="请选择活动区域" inline="true">
-					<el-option label="区域一" value="1"></el-option>
-					<el-option label="区域二" value="2"></el-option>
-					</el-select>
-				</el-form-item> -->
-				<!-- <el-input v-model="addForm.parentId" type="hidden"></el-input>
-				<el-form-item label="上级菜单" prop="parentName">
-					<el-input v-model="addForm.parentName" @click.native="selectParentMenu" clearable @clear="clearParentMenu"></el-input>
-				</el-form-item> -->
 				<el-form-item label="路由" prop="url">
 					<el-input v-model="addForm.url"></el-input>
 				</el-form-item>
@@ -200,6 +116,7 @@
 	import Treeselect from '@riophae/vue-treeselect'
 	// import the styles
 	import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+	import transfer from "@/common/js/tree-data-transfer";
 
     export default {
 		components: { Treeselect },
