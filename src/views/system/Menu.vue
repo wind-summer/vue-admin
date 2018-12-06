@@ -14,7 +14,7 @@
 
         <!--列表-->
 		<el-table :data="menus" border highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<el-table-tree-column prop="name" label="菜单名称" tree-key="id" parent-key="parentId" child-key="children"></el-table-tree-column>
+			<el-table-tree-column prop="name" label="菜单名称" tree-key="id" parent-key="parentId" child-key="children"/>
 			<el-table-column prop="icon" align="center" label="图标" width="100" sortable>
                 <template slot-scope="scope">
                     <i :class="scope.row.icon"></i>
@@ -210,7 +210,6 @@
 							//NProgress.start();
 							//var addParams = { name: this.addForm.name, username: this.addForm.username, password: this.addForm.password, mobile: this.addForm.mobile, email: this.addForm.email };
 							let para = this.addForm;
-							debugger;
 							// var newParentId;
 							// if(this.addForm.parentId == ''){
 							// 	newParentId = 0;

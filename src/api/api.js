@@ -10,11 +10,11 @@ let base = 'http://localhost:8090/admin';
 export const requestLogin = params => { return instance.post(`${base}/sys/login/sign_in`, params).then(res => res.data); };
 
 //用户管理接口
-export const getUserList = params => { return instance.get(`${base}/sys/user/users`, { params: params }); };
-export const getUserListPage = params => { return instance.get(`${base}/sys/user/users`, { params: params }); };
-export const addUser = params => { return instance.post(`${base}/sys/user/user`, params).then(res => res.data); };
-export const editUser = params => { return instance.put(`${base}/sys/user/user`,  params).then(res => res.data); };
-export const batchRemoveUser = params => { return instance.delete(`${base}/sys/user/user/${params}`, params).then(res => res.data); };
+export const getUserList = params => { return instance.get(`${base}/sys/users`, { params: params }); };
+export const getUserListPage = params => { return instance.get(`${base}/sys/users`, { params: params }); };
+export const addUser = params => { return instance.post(`${base}/sys/user`, params).then(res => res.data); };
+export const editUser = params => { return instance.put(`${base}/sys/user`,  params).then(res => res.data); };
+export const batchRemoveUser = params => { return instance.delete(`${base}/sys/user/${params}`, params).then(res => res.data); };
 
 //菜单管理接口
 export const getMenuList = params => { return instance.get(`${base}/sys/menus`, {}); };
@@ -23,6 +23,9 @@ export const addMenu = params => { return instance.post(`${base}/sys/menu`, para
 export const editMenu = params => { return instance.put(`${base}/sys/menu`, params).then(res => res.data); };
 export const deleteMenu = params => { return instance.delete(`${base}/sys/menu/${params}`, params).then(res => res.data); };
 
+//角色管理接口
+export const getRoleListPage =params => { return instance.get(`${base}/sys/roles`, { params: params }); };
+export const addRole = params => { return instance.post(`${base}/sys/role`, params).then(res => res.data); };
 
 // http request 请求拦截器，有token值则配置上token值
 instance.interceptors.request.use((request, _this) => {
