@@ -26,6 +26,8 @@ export const deleteMenu = params => { return instance.delete(`${base}/sys/menu/$
 //角色管理接口
 export const getRoleListPage =params => { return instance.get(`${base}/sys/roles`, { params: params }); };
 export const addRole = params => { return instance.post(`${base}/sys/role`, params).then(res => res.data); };
+export const editRole = params => { return instance.put(`${base}/sys/role`, params).then(res => res.data); };
+export const getRoleAndMenusInfo = params => { return instance.get(`${base}/sys/role/${params}/detail`, params); };
 
 // http request 请求拦截器，有token值则配置上token值
 instance.interceptors.request.use((request, _this) => {
@@ -43,6 +45,10 @@ instance.interceptors.response.use(response => {
   if(code && code == 401) {
     window.location.href = '/#/login' ;
     console.log('请从新登陆');
+  }
+  if(code && code == 404) {
+    window.location.href = '/#/login' ;
+    console.log('服务类连接失败');
   }
   return response;
 });

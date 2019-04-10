@@ -51,7 +51,7 @@
 					<el-input v-model="addForm.remark" ></el-input>
 				</el-form-item>
 				<el-form-item label="菜单授权">
-					<el-tree ref="addTree" :data="menusTree" show-checkbox node-key="id" :default-checked-keys="[2]" :props="defaultProps">
+					<el-tree ref="addTree" :data="menusTree" show-checkbox node-key="id" :default-checked-keys="[]" :props="defaultProps">
 					</el-tree>
 				</el-form-item>
 			</el-form>
@@ -64,20 +64,15 @@
 		<!--编辑界面-->
 		<el-dialog title="编辑" v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false">
 			<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-				<el-form-item label="姓名" prop="name" label-width="80px">
-					<el-input v-model="editForm.name" auto-complete="off"></el-input>
+				<el-form-item label="角色名称" prop="roleName">
+					<el-input v-model="editForm.roleName"></el-input>
 				</el-form-item>
-				<el-form-item label="账号" prop="username">
-					<el-input v-model="editForm.username" auto-complete="off" :disabled="true"></el-input>
+				<el-form-item label="备注" prop="remark">
+					<el-input v-model="editForm.remark" ></el-input>
 				</el-form-item>
-				<el-form-item label="手机" prop="mobile">
-					<el-input v-model="editForm.mobile" auto-complete="off" maxlength="11"></el-input>
-				</el-form-item>
-				<el-form-item label="邮箱" prop="email">
-					<el-input v-model="editForm.email" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="状态" prop="status">
-					<el-switch active-value="ENABLE" inactive-value="DISABLE" v-model="editForm.status"></el-switch>
+				<el-form-item label="菜单授权">
+					<el-tree ref="updateTree" :data="menusTree" show-checkbox node-key="id" :default-checked-keys="editForm.menuIds" :props="defaultProps">
+					</el-tree>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -94,7 +89,7 @@
 	import util from '../../common/js/util'
 	//import NProgress from 'nprogress'
 	// , removeUser, batchRemoveUser, editUser, addUser
-	import { getRoleListPage, getParentTrees, addRole } from '../../api/api';
+	import { getRoleListPage, getParentTrees, addRole, getRoleAndMenusInfo, editRole } from '../../api/api';
 
 	export default {
 		data() {
@@ -136,11 +131,9 @@
 				//编辑界面数据
 				editForm: {
 					id: 0,
-					name: '',
-					sex: -1,
-					age: 0,
-					birth: '',
-					addr: ''
+					roleName: '',
+					remark: '',
+					menuIds: []
 				}
 			}
 		},
@@ -205,17 +198,14 @@
 			//显示编辑界面
 			handleEdit: function (index, row) {
 				this.editFormVisible = true;
-				this.editForm = Object.assign({}, row);
-				if(row.status===1){
-					this.editForm.status = 'ENABLE';
-				}else{
-					this.editForm.status = 'DISABLE';
-				}
+				this.getParentTrees();
+				getRoleAndMenusInfo(row.id).then((res) => {
+					this.editForm = res.data;
+				});
 			},
 			getParentTrees(){
 				getParentTrees().then((res) => {
 					this.menusTree = res.data;
-					debugger;
 				});
             },
 			//显示新增界面
@@ -238,7 +228,6 @@
 							this.addForm.menuIds = this.$refs.addTree.getCheckedKeys();
 							//var addParams = { name: this.addForm.name, username: this.addForm.username, password: this.addForm.password, mobile: this.addForm.mobile, email: this.addForm.email };
 							let para = this.addForm;
-							debugger;
 							//return;
 							//para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
 							addRole(para).then((res,error) => {
@@ -273,21 +262,19 @@
 					if (valid) {
 						this.$confirm('确认提交吗？', '提示', {}).then(() => {
 							this.editLoading = true;
-							//NProgress.start();
+							this.editForm.menuIds = this.$refs.editTree.getCheckedKeys();
 							let para = this.editForm;
-							//para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-							editUser(para).then((res) => {
+							editRole(para).then((res,error) => {
 								this.editLoading = false;
 								let { msg, code, data } = res;
 								if(code == 0){
-									//NProgress.done();
 									this.$message({
 										message: msg,
 										type: 'success'
 									});
 									this.$refs['editForm'].resetFields();
 									this.editFormVisible = false;
-									this.getUsers();
+									this.getRoles();
 								}else{
 									this.$message({
 										message: msg,
