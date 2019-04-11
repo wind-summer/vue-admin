@@ -13,8 +13,8 @@
 		</el-col>
 
         <!--列表-->
-		<el-table :data="menus" border highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<el-table-tree-column prop="name" label="菜单名称" tree-key="id" parent-key="parentId" child-key="children"/>
+		<el-table :data="menus" border highlight-current-row v-loading="listLoading" row-key="id" style="width: 100%;">
+			<el-table-column prop="name" label="菜单名称" />
 			<el-table-column prop="icon" align="center" label="图标" width="100" sortable>
                 <template slot-scope="scope">
                     <i :class="scope.row.icon"></i>
@@ -39,6 +39,32 @@
 				</template>
 			</el-table-column>
 		</el-table>
+		<!-- <el-table :data="menus" border highlight-current-row v-loading="listLoading" row-key="id" style="width: 100%;">
+			<el-table-tree-column prop="name" label="菜单名称" tree-key="id" parent-key="parentId" child-key="children"/>
+			<el-table-column prop="icon" align="center" label="图标" width="100" sortable>
+                <template slot-scope="scope">
+                    <i :class="scope.row.icon"></i>
+                </template>
+			</el-table-column>
+			<el-table-column prop="type" label="类型" width="100" sortable>
+				<template slot-scope="scope">
+                    <div v-if="scope.row.type === 0"><el-tag type="" disable-transitions >菜单</el-tag></div>
+                    <div v-else-if="scope.row.type === 1"><el-tag type="success" disable-transitions >按钮</el-tag></div>
+				</template>
+			</el-table-column>
+			<el-table-column prop="orderNum" label="排序" width="100" sortable>
+			</el-table-column>
+            <el-table-column prop="url" label="路由" width="200" sortable>
+			</el-table-column>
+            <el-table-column prop="perms" label="授权标识" sortable>
+			</el-table-column>
+            <el-table-column label="操作" width="150" >
+				<template slot-scope="scope">
+					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+				</template>
+			</el-table-column>
+		</el-table> -->
 
         <!--新增界面-->
 		<el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible"  width="40%">
@@ -179,8 +205,9 @@
             getMenus(){
                 this.listLoading = true;
 				getMenuList().then((res) => {
+					debugger;
                     this.listLoading = false;
-                    this.menus = res.data;
+					this.menus = res.data;
 				});
 			},
 			getParentTrees(){
@@ -190,6 +217,7 @@
             },
 			//显示新增界面
 			handleAdd: function () {
+				debugger;
 				this.getParentTrees();
 				this.addFormVisible = true;
 				this.addForm = {

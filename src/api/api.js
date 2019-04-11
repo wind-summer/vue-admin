@@ -28,6 +28,7 @@ export const getRoleListPage =params => { return instance.get(`${base}/sys/roles
 export const addRole = params => { return instance.post(`${base}/sys/role`, params).then(res => res.data); };
 export const editRole = params => { return instance.put(`${base}/sys/role`, params).then(res => res.data); };
 export const getRoleAndMenusInfo = params => { return instance.get(`${base}/sys/role/${params}/detail`, params); };
+export const batchRemoveRole = params => { return instance.delete(`${base}/sys/role/${params}`, params).then(res => res.data); };
 
 // http request 请求拦截器，有token值则配置上token值
 instance.interceptors.request.use((request, _this) => {

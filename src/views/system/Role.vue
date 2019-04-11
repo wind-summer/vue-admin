@@ -51,7 +51,7 @@
 					<el-input v-model="addForm.remark" ></el-input>
 				</el-form-item>
 				<el-form-item label="菜单授权">
-					<el-tree ref="addTree" :data="menusTree" show-checkbox node-key="id" :default-checked-keys="[]" :props="defaultProps">
+					<el-tree ref="addTree" :data="menusTree" show-checkbox node-key="id" :default-checked-keys="[]" :props="defaultProps" default-expand-all>
 					</el-tree>
 				</el-form-item>
 			</el-form>
@@ -71,7 +71,7 @@
 					<el-input v-model="editForm.remark" ></el-input>
 				</el-form-item>
 				<el-form-item label="菜单授权">
-					<el-tree ref="updateTree" :data="menusTree" show-checkbox node-key="id" :default-checked-keys="editForm.menuIds" :props="defaultProps">
+					<el-tree ref="editTree" :data="menusTree" show-checkbox node-key="id" :default-checked-keys="editForm.menuIds" :props="defaultProps" default-expand-all>
 					</el-tree>
 				</el-form-item>
 			</el-form>
@@ -80,8 +80,6 @@
 				<el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
 			</div>
 		</el-dialog>
-
-		
 	</section>
 </template>
 
@@ -89,7 +87,7 @@
 	import util from '../../common/js/util'
 	//import NProgress from 'nprogress'
 	// , removeUser, batchRemoveUser, editUser, addUser
-	import { getRoleListPage, getParentTrees, addRole, getRoleAndMenusInfo, editRole } from '../../api/api';
+	import { getRoleListPage, getParentTrees, addRole, getRoleAndMenusInfo, editRole, batchRemoveRole } from '../../api/api';
 
 	export default {
 		data() {
@@ -138,16 +136,9 @@
 			}
 		},
 		methods: {
-			filterTag(value, row) {
-				return row.status === value;
-			},
-			//性别显示转换
-			formatSex: function (row, column) {
-				return row.sex == 1 ? '男' : row.sex == 0 ? '女' : '未知';
-			},
 			handleCurrentChange(val) {
 				this.page = val;
-				this.getUsers();
+				this.getRoles();
 			},
 			//获取用户列表
 			getRoles() {
@@ -160,8 +151,15 @@
 				//NProgress.start();
 				getRoleListPage(para).then((res) => {
 					this.total = res.data.total;
-          			this.size = res.data.size;
-          			this.current = res.data.current;
+					this.size = res.data.size;
+					debugger;
+					//如果请求页数大于当前最高页数，这把页数请求定位到最后一页
+					if(res.data.current>res.data.pages){
+						this.page = res.data.pages;
+						this.getRoles();
+					}else{
+						this.page = res.data.current;
+					}
 					this.roles = res.data.records;
 					this.listLoading = false;
 					//NProgress.done();
@@ -174,7 +172,7 @@
 				}).then(() => {
 					this.listLoading = true;
 					//NProgress.start();
-					batchRemoveUser(row.id).then((res) => {
+					batchRemoveRole(row.id).then((res) => {
 						this.listLoading = false;
 						//NProgress.done();
 						let {msg, code, data} = res;
@@ -183,7 +181,7 @@
 								message: msg,
 								type: 'success'
 							});
-							this.getUsers();
+							this.getRoles();
 						}else{
 							this.$message({
 								message: msg,
@@ -297,18 +295,16 @@
 					type: 'warning'
 				}).then(() => {
 					this.listLoading = true;
-					//NProgress.start();
-					let para = { ids: ids };
-					batchRemoveUser(ids).then((res) => {
+					debugger;
+					batchRemoveRole(ids).then((res) => {
 						this.listLoading = false;
-						//NProgress.done();
 						let {msg, code, data} = res;
 						if(code == 0){
 							this.$message({
 								message: msg,
 								type: 'success'
 							});
-							this.getUsers();
+							this.getRoles();
 						}else{
 							this.$message({
 								message: msg,

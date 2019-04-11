@@ -253,7 +253,13 @@
 				getUserListPage(para).then((res) => {
 					this.total = res.data.total;
           			this.size = res.data.size;
-          			this.current = res.data.current;
+          			//如果请求页数大于当前最高页数，这把页数请求定位到最后一页
+					if(res.data.current>res.data.pages){
+						this.page = res.data.pages;
+						this.getUsers();
+					}else{
+						this.page = res.data.current;
+					}
 					this.users = res.data.records;
 					this.listLoading = false;
 					//NProgress.done();
