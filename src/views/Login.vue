@@ -64,7 +64,7 @@
               } else {
                 sessionStorage.setItem('user', JSON.stringify(user));
                 sessionStorage.setItem('token', token);
-                this.$router.push({ path: '/table' });
+                this.$router.push({ path: '/main' });
               }
             });
           } else {

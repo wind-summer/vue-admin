@@ -23,8 +23,38 @@
 		<el-col :span="24" class="main">
 			<aside :class="collapsed?'menu-collapsed':'menu-expanded'">
 				<!--导航菜单-->
-				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect"
-					 unique-opened router v-show="!collapsed">
+				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect" unique-opened router v-show="!collapsed">
+					
+					<el-submenu :index="item.path" v-for="(item,index) in $router.options.routes" :key="item.id" v-if="!item.hidden">
+						<template slot="title">
+							<i class="el-icon-location"></i>
+							<span slot="title">{{item.name}}</span>
+						</template>
+						<template v-if="item.children != null && item.children.length>0">
+							<template v-for="child in item.children" >
+								<i :class="child.iconCls"></i>
+								<el-menu-item :index="item.children[0].path" >{{child.name}}</el-menu-item>
+							</template>
+						</template>
+
+						
+						
+												<!-- <el-menu-item-group>
+						<span slot="title">分组一</span>
+						<el-menu-item index="1-1">选项1</el-menu-item>
+						<el-menu-item index="1-2">选项2</el-menu-item>
+						</el-menu-item-group>
+						<el-menu-item-group title="分组2">
+						<el-menu-item index="1-3">选项3</el-menu-item>
+						</el-menu-item-group>
+						<el-submenu index="1-4">
+						<span slot="title">选项4</span>
+						<el-menu-item index="1-4-1">选项1</el-menu-item>
+						</el-submenu> -->
+					</el-submenu>
+					
+				</el-menu>
+				<!-- <el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect" unique-opened router v-show="!collapsed">
 					<template v-for="(item,index) in $router.options.routes" v-if="!item.hidden">
 						<el-submenu :index="index+''" v-if="!item.leaf">
 							<template slot="title"><i :class="item.iconCls"></i>{{item.name}}</template>
@@ -32,9 +62,9 @@
 						</el-submenu>
 						<el-menu-item v-if="item.leaf&&item.children.length>0" :index="item.children[0].path"><i :class="item.iconCls"></i>{{item.children[0].name}}</el-menu-item>
 					</template>
-				</el-menu>
+				</el-menu> -->
 				<!--导航菜单-折叠后-->
-				<ul class="el-menu el-menu-vertical-demo collapsed" v-show="collapsed" ref="menuCollapsed">
+				<!-- <ul class="el-menu el-menu-vertical-demo collapsed" v-show="collapsed" ref="menuCollapsed">
 					<li v-for="(item,index) in $router.options.routes" v-if="!item.hidden" class="el-submenu item">
 						<template v-if="!item.leaf">
 							<div class="el-submenu__title" style="padding-left: 20px;" @mouseover="showMenu(index,true)" @mouseout="showMenu(index,false)"><i :class="item.iconCls"></i></div>
@@ -48,7 +78,7 @@
 							</li>
 						</template>
 					</li>
-				</ul>
+				</ul> -->
 			</aside>
 			<section class="content-container">
 				<div class="grid-content bg-purple-light">
