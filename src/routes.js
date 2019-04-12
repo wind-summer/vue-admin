@@ -28,7 +28,7 @@ let routes = [
     },
     //{ path: '/main', component: Main },
     {
-        path: '/',
+        path: '/0',
         component: Home,
         name: '系统管理',
         iconCls: 'el-icon-setting',//图标样式class
@@ -40,7 +40,7 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/1',
         component: Home,
         name: '导航一',
         iconCls: 'el-icon-mobile-phone',//图标样式class
@@ -73,7 +73,7 @@ let routes = [
     //     ]
     // },
     {
-        path: '/',
+        path: '/2',
         component: Home,
         name: 'Charts',
         iconCls: 'fa fa-bar-chart',

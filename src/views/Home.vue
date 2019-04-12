@@ -1,3 +1,137 @@
+<style scoped lang="scss">
+	@import '~scss_vars';
+	.el-menu-vertical-demo:not(.el-menu--collapse) {
+		width: 230px;
+		min-height: 400px;
+	}
+
+	.container {
+		position: absolute;
+		top: 0px;
+		bottom: 0px;
+		width: 100%;
+		.header {
+			height: 60px;
+			line-height: 60px;
+			background: $color-primary;
+			color:#fff;
+			.userinfo {
+				text-align: right;
+				padding-right: 35px;
+				float: right;
+				.userinfo-inner {
+					cursor: pointer;
+					color:#fff;
+					img {
+						width: 40px;
+						height: 40px;
+						border-radius: 20px;
+						margin: 10px 0px 10px 10px;
+						float: right;
+					}
+				}
+			}
+			.logo {
+				//width:230px;
+				height:60px;
+				font-size: 22px;
+				padding-left:20px;
+				padding-right:20px;
+				border-color: rgba(238,241,146,0.3);
+				border-right-width: 1px;
+				border-right-style: solid;
+				img {
+					width: 40px;
+					float: left;
+					margin: 10px 10px 10px 18px;
+				}
+				.txt {
+					color:#fff;
+				}
+			}
+			.logo-width{
+				width:230px;
+			}
+			.logo-collapse-width{
+				width:160px
+			}
+			.tools{
+				padding: 0px 23px;
+				width:14px;
+				height: 60px;
+				line-height: 60px;
+				cursor: pointer;
+			}
+		}
+		.main {
+			display: flex;
+			// background: #324057;
+			position: absolute;
+			top: 60px;
+			bottom: 0px;
+			overflow: hidden;
+			aside {
+				flex:0 0 230px;
+				width: 230px;
+				// position: absolute;
+				// top: 0px;
+				// bottom: 0px;
+				.el-menu{
+					height: 100%;
+				}
+				.collapsed{
+					width:60px;
+					.item{
+						position: relative;
+					}
+					.submenu{
+						position:absolute;
+						top:0px;
+						left:60px;
+						z-index:99999;
+						height:auto;
+						display:none;
+					}
+
+				}
+			}
+			.menu-collapsed{
+				flex:0 0 60px;
+				width: 60px;
+			}
+			.menu-expanded{
+				flex:0 0 230px;
+				width: 230px;
+			}
+			.content-container {
+				// background: #f1f2f7;
+				flex:1;
+				// position: absolute;
+				// right: 0px;
+				// top: 0px;
+				// bottom: 0px;
+				// left: 230px;
+				overflow-y: scroll;
+				padding: 20px;
+				.breadcrumb-container {
+					//margin-bottom: 15px;
+					.title {
+						width: 200px;
+						float: left;
+						color: #475669;
+					}
+					.breadcrumb-inner {
+						float: right;
+					}
+				}
+				.content-wrapper {
+					background-color: #fff;
+					box-sizing: border-box;
+				}
+			}
+		}
+	}
+</style>
 <template>
 	<el-row class="container">
 		<el-col :span="24" class="header">
@@ -21,10 +155,29 @@
 			</el-col>
 		</el-col>
 		<el-col :span="24" class="main">
-				<!--导航菜单-->
-				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" unique-opened router :collapsed="collapse">
-					 <NavMenu :navMenus="$router.options.routes"></NavMenu>
-				</el-menu>
+			<!--导航菜单-->
+			<el-menu default-active="1-4-1" class="el-menu-vertical-demo"  :collapse="collapsed">
+				<template v-for="item in $router.options.routes">
+					<NavMenu :menu="item"></NavMenu>
+				</template>
+			</el-menu>
+				<!-- <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="collapsed">
+					<el-submenu index="1">
+						<template slot="title">
+							<i class="el-icon-location"></i>
+							<span slot="title">导航一</span>
+						</template>
+						<el-menu-item index="1-1">选项1</el-menu-item>
+						<el-menu-item index="1-2">选项2</el-menu-item>
+						<el-menu-item-group title="分组2">
+						<el-menu-item index="1-3">选项3</el-menu-item>
+						</el-menu-item-group>
+					</el-submenu>
+				</el-menu> -->
+			<!-- <aside>
+				
+			</aside> -->
+				
 				<!-- <el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect" unique-opened router v-show="!collapsed">
 					<template v-for="(item,index) in $router.options.routes" v-if="!item.hidden">
 						<el-submenu :index="index+''" v-if="!item.leaf">
@@ -142,133 +295,4 @@
 
 </script>
 
-<style scoped lang="scss">
-	@import '~scss_vars';
 
-	.container {
-		position: absolute;
-		top: 0px;
-		bottom: 0px;
-		width: 100%;
-		.header {
-			height: 60px;
-			line-height: 60px;
-			background: $color-primary;
-			color:#fff;
-			.userinfo {
-				text-align: right;
-				padding-right: 35px;
-				float: right;
-				.userinfo-inner {
-					cursor: pointer;
-					color:#fff;
-					img {
-						width: 40px;
-						height: 40px;
-						border-radius: 20px;
-						margin: 10px 0px 10px 10px;
-						float: right;
-					}
-				}
-			}
-			.logo {
-				//width:230px;
-				height:60px;
-				font-size: 22px;
-				padding-left:20px;
-				padding-right:20px;
-				border-color: rgba(238,241,146,0.3);
-				border-right-width: 1px;
-				border-right-style: solid;
-				img {
-					width: 40px;
-					float: left;
-					margin: 10px 10px 10px 18px;
-				}
-				.txt {
-					color:#fff;
-				}
-			}
-			.logo-width{
-				width:230px;
-			}
-			.logo-collapse-width{
-				width:60px
-			}
-			.tools{
-				padding: 0px 23px;
-				width:14px;
-				height: 60px;
-				line-height: 60px;
-				cursor: pointer;
-			}
-		}
-		.main {
-			display: flex;
-			// background: #324057;
-			position: absolute;
-			top: 60px;
-			bottom: 0px;
-			overflow: hidden;
-			aside {
-				flex:0 0 230px;
-				width: 230px;
-				// position: absolute;
-				// top: 0px;
-				// bottom: 0px;
-				.el-menu{
-					height: 100%;
-				}
-				.collapsed{
-					width:60px;
-					.item{
-						position: relative;
-					}
-					.submenu{
-						position:absolute;
-						top:0px;
-						left:60px;
-						z-index:99999;
-						height:auto;
-						display:none;
-					}
-
-				}
-			}
-			.menu-collapsed{
-				flex:0 0 60px;
-				width: 60px;
-			}
-			.menu-expanded{
-				flex:0 0 230px;
-				width: 230px;
-			}
-			.content-container {
-				// background: #f1f2f7;
-				flex:1;
-				// position: absolute;
-				// right: 0px;
-				// top: 0px;
-				// bottom: 0px;
-				// left: 230px;
-				overflow-y: scroll;
-				padding: 20px;
-				.breadcrumb-container {
-					//margin-bottom: 15px;
-					.title {
-						width: 200px;
-						float: left;
-						color: #475669;
-					}
-					.breadcrumb-inner {
-						float: right;
-					}
-				}
-				.content-wrapper {
-					background-color: #fff;
-					box-sizing: border-box;
-				}
-			}
-		}
-	}
-</style>
