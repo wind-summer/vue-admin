@@ -22,4 +22,44 @@ for (let i = 0; i < 86; i++) {
   }));
 }
 
+// const Menus = [
+//   {
+//     id: 1,
+//     path: '/',
+//     component: Home,
+//     name: '系统管理',
+//     iconCls: 'el-icon-setting',//图标样式class
+//     children: [
+//         //, hidden: true
+//         { path: '/user', component: User, name: '用户管理', iconCls: 'el-icon-menu' },
+//         { path: '/role', component: Role, name: '角色管理', iconCls: 'el-icon-menu' },
+//         { path: '/menu', component: Menu, name: '菜单管理', iconCls: 'el-icon-menu' },
+//     ]
+//   },
+//   {
+//     id: 2,
+//     path: '/',
+//     component: Home,
+//     name: '导航一',
+//     iconCls: 'el-icon-mobile-phone',//图标样式class
+//     children: [
+//         //, hidden: true
+//         { path: '/main', component: Main, name: '主页' },
+//         { path: '/table', component: Table, name: 'Table' },
+//         { path: '/form', component: Form, name: 'Form' },
+//         { path: '/users', component: Users, name: '用户' },
+//     ]
+//   },
+//   {
+//     id: 3,
+//     path: '/',
+//     component: Home,
+//     name: 'Charts',
+//     iconCls: 'fa fa-bar-chart',
+//     children: [
+//         { path: '/echarts', component: echarts, name: 'echarts' }
+//     ]
+//   }
+// ];
+
 export { LoginUsers, Users };

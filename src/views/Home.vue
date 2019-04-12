@@ -21,38 +21,9 @@
 			</el-col>
 		</el-col>
 		<el-col :span="24" class="main">
-			<aside :class="collapsed?'menu-collapsed':'menu-expanded'">
 				<!--导航菜单-->
-				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect" unique-opened router v-show="!collapsed">
-					
-					<el-submenu :index="item.path" v-for="(item,index) in $router.options.routes" :key="item.id" v-if="!item.hidden">
-						<template slot="title">
-							<i class="el-icon-location"></i>
-							<span slot="title">{{item.name}}</span>
-						</template>
-						<template v-if="item.children != null && item.children.length>0">
-							<template v-for="child in item.children" >
-								<i :class="child.iconCls"></i>
-								<el-menu-item :index="item.children[0].path" >{{child.name}}</el-menu-item>
-							</template>
-						</template>
-
-						
-						
-												<!-- <el-menu-item-group>
-						<span slot="title">分组一</span>
-						<el-menu-item index="1-1">选项1</el-menu-item>
-						<el-menu-item index="1-2">选项2</el-menu-item>
-						</el-menu-item-group>
-						<el-menu-item-group title="分组2">
-						<el-menu-item index="1-3">选项3</el-menu-item>
-						</el-menu-item-group>
-						<el-submenu index="1-4">
-						<span slot="title">选项4</span>
-						<el-menu-item index="1-4-1">选项1</el-menu-item>
-						</el-submenu> -->
-					</el-submenu>
-					
+				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" unique-opened router :collapsed="collapse">
+					 <NavMenu :navMenus="$router.options.routes"></NavMenu>
 				</el-menu>
 				<!-- <el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen" @close="handleclose" @select="handleselect" unique-opened router v-show="!collapsed">
 					<template v-for="(item,index) in $router.options.routes" v-if="!item.hidden">
@@ -79,7 +50,6 @@
 						</template>
 					</li>
 				</ul> -->
-			</aside>
 			<section class="content-container">
 				<div class="grid-content bg-purple-light">
 					<el-col :span="24" class="breadcrumb-container">
@@ -102,7 +72,11 @@
 </template>
 
 <script>
+	import NavMenu from "./NavMenu.vue";
 	export default {
+		components: {
+			NavMenu: NavMenu
+		},
 		data() {
 			return {
 				sysName:'ADMIN',
