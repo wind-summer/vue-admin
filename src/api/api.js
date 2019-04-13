@@ -10,6 +10,7 @@ let base = 'http://localhost:8090/admin';
 export const requestLogin = params => { return instance.post(`${base}/sys/login/sign_in`, params).then(res => res.data); };
 
 //用户管理接口
+export const getUserInfo = params => { return instance.get(`${base}/sys/user/${params}/detail`,  params); };
 export const getUserList = params => { return instance.get(`${base}/sys/users`, { params: params }); };
 export const getUserListPage = params => { return instance.get(`${base}/sys/users`, { params: params }); };
 export const addUser = params => { return instance.post(`${base}/sys/user`, params).then(res => res.data); };
@@ -24,6 +25,7 @@ export const editMenu = params => { return instance.put(`${base}/sys/menu`, para
 export const deleteMenu = params => { return instance.delete(`${base}/sys/menu/${params}`, params).then(res => res.data); };
 
 //角色管理接口
+export const getRoleDropList =params => { return instance.get(`${base}/sys/role/droplist`, {}); };
 export const getRoleListPage =params => { return instance.get(`${base}/sys/roles`, { params: params }); };
 export const addRole = params => { return instance.post(`${base}/sys/role`, params).then(res => res.data); };
 export const editRole = params => { return instance.put(`${base}/sys/role`, params).then(res => res.data); };

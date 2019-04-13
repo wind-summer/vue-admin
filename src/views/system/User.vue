@@ -67,6 +67,11 @@
 				<el-form-item label="状态" prop="status">
 					<el-switch active-value="ENABLE" inactive-value="DISABLE" v-model="editForm.status"></el-switch>
 				</el-form-item>
+				<el-form-item label="角色" prop="roleIds">
+					<el-select v-model="editForm.roleIds" multiple placeholder="请选择">
+						<el-option v-for="item in roleDropList" :key="item.id" :label="item.name" :value="item.id"> </el-option>
+					</el-select>
+				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取消</el-button>
@@ -98,21 +103,11 @@
 				<el-form-item label="状态" prop="status">
 					<el-switch active-value="ENABLE" inactive-value="DISABLE" v-model="addForm.status"></el-switch>
 				</el-form-item>
-				<!-- <el-form-item label="性别">
-					<el-radio-group v-model="addForm.sex">
-						<el-radio class="radio" :label="1">男</el-radio>
-						<el-radio class="radio" :label="0">女</el-radio>
-					</el-radio-group>
+				<el-form-item label="角色" prop="roleIds">
+					<el-select v-model="addForm.roleIds" multiple aria-readonly="false" placeholder="请选择">
+						<el-option v-for="item in roleDropList" :label="item.name" :value="item.id"> </el-option>
+					</el-select>
 				</el-form-item>
-				<el-form-item label="年龄">
-					<el-input-number v-model="addForm.age" :min="0" :max="200"></el-input-number>
-				</el-form-item>
-				<el-form-item label="生日">
-					<el-date-picker type="date" placeholder="选择日期" v-model="addForm.birth"></el-date-picker>
-				</el-form-item>
-				<el-form-item label="地址">
-					<el-input type="textarea" v-model="addForm.addr"></el-input>
-				</el-form-item> -->
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="addFormVisible = false">取消</el-button>
@@ -126,7 +121,7 @@
 	import util from '../../common/js/util'
 	//import NProgress from 'nprogress'
 	// , removeUser, batchRemoveUser, editUser, addUser
-	import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser } from '../../api/api';
+	import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getRoleDropList, getUserInfo } from '../../api/api';
 
 	export default {
 		data() {
@@ -164,6 +159,7 @@
 					name: ''
 				},
 				users: [],
+				roleDropList: [],
 				total: 0,
 				page: 1,
 				size: 10,
@@ -187,10 +183,12 @@
 				editForm: {
 					id: 0,
 					name: '',
-					sex: -1,
-					age: 0,
-					birth: '',
-					addr: ''
+					username: '',
+					password: '',
+					mobile: '',
+					email: '',
+					status: 'ENABLE',
+					roleIds: []
 				},
 
 				addFormVisible: false,//新增界面是否显示
@@ -223,7 +221,8 @@
 					password2: '',
 					mobile: '',
 					email: '',
-					status: 'ENABLE'
+					status: 'ENABLE',
+					roleIds: []
 				}
 
 			}
@@ -295,6 +294,19 @@
 			},
 			//显示编辑界面
 			handleEdit: function (index, row) {
+				debugger;
+				this.roleDropList= [];
+				// this.editForm = {
+				// 	id: 0,
+				// 	name: '',
+				// 	username: '',
+				// 	password: '',
+				// 	mobile: '',
+				// 	email: '',
+				// 	status: 'ENABLE',
+				// 	roleIds: []
+				// };
+
 				this.editFormVisible = true;
 				this.editForm = Object.assign({}, row);
 				if(row.status===1){
@@ -302,6 +314,17 @@
 				}else{
 					this.editForm.status = 'DISABLE';
 				}
+				//先清空一下对应数据，不清有点问题
+				//this.editForm.roleIds = [];
+				//this.roleDropList=[];
+				
+				getRoleDropList().then((res) => {
+					this.roleDropList=res.data;
+				});
+				getUserInfo(row.id).then((res) => {
+					this.editForm.roleIds=res.data.roleIdList.toString();
+				});
+				
 			},
 			//显示新增界面
 			handleAdd: function () {
@@ -315,6 +338,9 @@
 					email: '',
 					status: "ENABLE"
 				};
+				getRoleDropList().then((res) => {
+					this.roleDropList=res.data;
+				});
 			},
 			//编辑
 			editSubmit: function () {
