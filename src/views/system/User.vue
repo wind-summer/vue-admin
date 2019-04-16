@@ -68,7 +68,7 @@
 					<el-switch active-value="ENABLE" inactive-value="DISABLE" v-model="editForm.status"></el-switch>
 				</el-form-item>
 				<el-form-item label="角色" prop="roleIds">
-					<el-select v-model="editForm.roleIds" multiple placeholder="请选择">
+					<el-select v-model="editForm.roleIds" multiple placeholder="请选择" size="medium">
 						<el-option v-for="item in roleDropList" :key="item.id" :label="item.name" :value="item.id"> </el-option>
 					</el-select>
 				</el-form-item>
@@ -105,7 +105,7 @@
 				</el-form-item>
 				<el-form-item label="角色" prop="roleIds">
 					<el-select v-model="addForm.roleIds" multiple aria-readonly="false" placeholder="请选择">
-						<el-option v-for="item in roleDropList" :label="item.name" :value="item.id"> </el-option>
+						<el-option v-for="item in roleDropList" :key="item.id" :label="item.name" :value="item.id"> </el-option>
 					</el-select>
 				</el-form-item>
 			</el-form>
@@ -119,8 +119,6 @@
 
 <script>
 	import util from '../../common/js/util'
-	//import NProgress from 'nprogress'
-	// , removeUser, batchRemoveUser, editUser, addUser
 	import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getRoleDropList, getUserInfo } from '../../api/api';
 
 	export default {
@@ -183,8 +181,6 @@
 				editForm: {
 					id: 0,
 					name: '',
-					username: '',
-					password: '',
 					mobile: '',
 					email: '',
 					status: 'ENABLE',
@@ -294,35 +290,25 @@
 			},
 			//显示编辑界面
 			handleEdit: function (index, row) {
-				debugger;
-				this.roleDropList= [];
-				// this.editForm = {
-				// 	id: 0,
-				// 	name: '',
-				// 	username: '',
-				// 	password: '',
-				// 	mobile: '',
-				// 	email: '',
-				// 	status: 'ENABLE',
-				// 	roleIds: []
-				// };
-
 				this.editFormVisible = true;
-				this.editForm = Object.assign({}, row);
+
+				//回显数据
+				this.editForm.id = row.id;
+				this.editForm.name = row.name;
+				this.editForm.email = row.email;
+				this.editForm.mobile = row.mobile;
 				if(row.status===1){
 					this.editForm.status = 'ENABLE';
 				}else{
 					this.editForm.status = 'DISABLE';
 				}
-				//先清空一下对应数据，不清有点问题
-				//this.editForm.roleIds = [];
-				//this.roleDropList=[];
-				
+				let _this = this;
 				getRoleDropList().then((res) => {
-					this.roleDropList=res.data;
+					_this.roleDropList=res.data;
 				});
+				
 				getUserInfo(row.id).then((res) => {
-					this.editForm.roleIds=res.data.roleIdList.toString();
+					_this.editForm.roleIds=res.data.roleIdList;
 				});
 				
 			},

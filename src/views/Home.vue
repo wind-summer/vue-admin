@@ -226,6 +226,7 @@
 
 <script>
 	import NavMenu from "./NavMenu.vue";
+	import { getLoginInfo } from '../api/api';
 	export default {
 		components: {
 			NavMenu: NavMenu
@@ -234,6 +235,7 @@
 			return {
 				sysName:'ADMIN',
 				collapsed:false,
+				menus: [],
 				sysUserName: '',
 				sysUserAvatar: '',
 				form: {
@@ -289,6 +291,15 @@
 				this.sysUserName = user.name || '';
 				this.sysUserAvatar = user.avatar || '';
 			}
+			debugger;
+			getLoginInfo().then((res) => {
+					sessionStorage.setItem('menus', JSON.stringify(res.data.menus));
+					debugger;
+					this.menus = res.data.menus;
+				}).catch(() => {
+
+				});
+
 
 		}
 	}

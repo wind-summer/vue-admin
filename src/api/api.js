@@ -16,6 +16,8 @@ export const getUserListPage = params => { return instance.get(`${base}/sys/user
 export const addUser = params => { return instance.post(`${base}/sys/user`, params).then(res => res.data); };
 export const editUser = params => { return instance.put(`${base}/sys/user`,  params).then(res => res.data); };
 export const batchRemoveUser = params => { return instance.delete(`${base}/sys/user/${params}`, params).then(res => res.data); };
+export const getLoginInfo = params => { return instance.get(`${base}/sys/user/loginInfo`, {}).then(res => res.data); };
+
 
 //菜单管理接口
 export const getMenuList = params => { return instance.get(`${base}/sys/menus`, {}); };

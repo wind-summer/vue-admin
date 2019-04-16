@@ -152,7 +152,6 @@
 				getRoleListPage(para).then((res) => {
 					this.total = res.data.total;
 					this.size = res.data.size;
-					debugger;
 					//如果请求页数大于当前最高页数，这把页数请求定位到最后一页
 					if(res.data.current>res.data.pages){
 						this.page = res.data.pages;
@@ -216,17 +215,55 @@
 				};
 				this.getParentTrees();
 			},
+			// 获取选中的树节点
+			getTreeNodes (childNodes, ids, tree) {
+				// 将所有选中的子节点保存
+				for (var i = 0; i < childNodes.length; i++) {
+				ids.push(childNodes[i])
+				// 获取父级节点
+				this.getTreeParentNode(childNodes[i], ids, tree)
+				}
+			},
+			// 递归查询所有上级数据
+			getTreeParentNode (id, ids, tree) {
+				// 获取当前节点的上级节点id
+				var parentId = tree.getNode(id).parent.data.id;
+				if (parentId && parentId !== null) {
+					ids.push(parentId)
+					this.getTreeParentNode(parentId, ids, tree);
+				}
+			},
+			//去重复
+			distinct (array) {
+				var temp = []; //一个新的临时数组
+				for(var i = 0; i < array.length; i++){
+					if(temp.indexOf(array[i]) == -1){
+						temp.push(array[i]);
+					}
+				}
+				return temp;
+			},
 			//新增
 			addSubmit: function () {
 				this.$refs.addForm.validate((valid) => {
 					if (valid) {
 						this.$confirm('确认提交吗？', '提示', {}).then(() => {
 							this.addLoading = true;
-							//NProgress.start();
-							this.addForm.menuIds = this.$refs.addTree.getCheckedKeys();
+
+							//处理选中treeid，包括父类id也给添加上
+							// 获取完全选中的节点
+							var treeKeys = this.$refs.addTree.getCheckedKeys()
+							// 最终选中的包括半选中的节点数组
+							var ids = [];
+							debugger;
+							var tree = this.$refs.addTree;
+							this.getTreeNodes(treeKeys, ids, tree);
+							//去重复
+							this.addForm.menuIds = this.distinct(ids);
+
+							//this.addForm.menuIds = this.$refs.addTree.getCheckedKeys();
 							//var addParams = { name: this.addForm.name, username: this.addForm.username, password: this.addForm.password, mobile: this.addForm.mobile, email: this.addForm.email };
 							let para = this.addForm;
-							//return;
 							//para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
 							addRole(para).then((res,error) => {
 								this.addLoading = false;
@@ -260,7 +297,18 @@
 					if (valid) {
 						this.$confirm('确认提交吗？', '提示', {}).then(() => {
 							this.editLoading = true;
-							this.editForm.menuIds = this.$refs.editTree.getCheckedKeys();
+							//this.editForm.menuIds = this.$refs.editTree.getCheckedKeys();
+							//处理选中treeid，包括父类id也给添加上
+							// 获取完全选中的节点
+							var treeKeys = this.$refs.editTree.getCheckedKeys()
+							// 最终选中的包括半选中的节点数组
+							var ids = [];
+							var tree = this.$refs.editTree;
+							debugger;
+							this.getTreeNodes(treeKeys, ids, tree);
+							//去重复
+							this.editForm.menuIds = this.distinct(ids);
+
 							let para = this.editForm;
 							editRole(para).then((res,error) => {
 								this.editLoading = false;
