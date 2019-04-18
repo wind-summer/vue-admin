@@ -225,7 +225,6 @@
 		},
 		methods: {
 			filterTag(value, row) {
-				debugger;
 				return row.status === value;
 			},
 			//性别显示转换
@@ -412,7 +411,6 @@
 						this.listLoading = false;
 						//NProgress.done();
 						let {msg, code, data} = res;
-						debugger;
 						if(code == 0){
 							this.$message({
 								message: msg,

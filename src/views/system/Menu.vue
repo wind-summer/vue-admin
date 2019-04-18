@@ -205,7 +205,6 @@
             getMenus(){
                 this.listLoading = true;
 				getMenuList().then((res) => {
-					debugger;
                     this.listLoading = false;
 					this.menus = res.data;
 				});
@@ -217,7 +216,6 @@
             },
 			//显示新增界面
 			handleAdd: function () {
-				debugger;
 				this.getParentTrees();
 				this.addFormVisible = true;
 				this.addForm = {

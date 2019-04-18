@@ -42,7 +42,7 @@
 			</el-pagination>
 		</el-col>
 		<!--新增界面-->
-		<el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible"  width="30%">
+		<el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible"  width="30%" :before-close="handleDialogClose">
 			<el-form :model="addForm" status-icon :rules="addFormRules" ref="addForm" label-width="80px" class="demo-ruleForm">
 				<el-form-item label="角色名称" prop="roleName">
 					<el-input v-model="addForm.roleName"></el-input>
@@ -56,13 +56,13 @@
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="addFormVisible = false">取消</el-button>
+				<el-button @click.native="handleDialogClose">取消</el-button>
 				<el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
 			</div>
 		</el-dialog>
 
 		<!--编辑界面-->
-		<el-dialog title="编辑" v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false">
+		<el-dialog title="编辑" v-model="editFormVisible" :visible.sync="editFormVisible" :before-close="handleDialogClose" >
 			<el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
 				<el-form-item label="角色名称" prop="roleName">
 					<el-input v-model="editForm.roleName"></el-input>
@@ -76,7 +76,7 @@
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
-				<el-button @click.native="editFormVisible = false">取消</el-button>
+				<el-button @click.native="handleDialogClose">取消</el-button>
 				<el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
 			</div>
 		</el-dialog>
@@ -136,6 +136,16 @@
 			}
 		},
 		methods: {
+			//表单取消按钮
+			handleDialogClose(){
+				this.menusTree = [];
+
+				this.editForm.menuIds = [];
+				this.editFormVisible = false;
+
+				this.addForm.menuIds = [];
+				this.addFormVisible = false;
+			},
 			handleCurrentChange(val) {
 				this.page = val;
 				this.getRoles();
@@ -194,6 +204,7 @@
 			},
 			//显示编辑界面
 			handleEdit: function (index, row) {
+				this.editForm.menuIds = [];
 				this.editFormVisible = true;
 				this.getParentTrees();
 				getRoleAndMenusInfo(row.id).then((res) => {
@@ -246,6 +257,7 @@
 			//新增
 			addSubmit: function () {
 				this.$refs.addForm.validate((valid) => {
+					let _this = this;
 					if (valid) {
 						this.$confirm('确认提交吗？', '提示', {}).then(() => {
 							this.addLoading = true;
@@ -255,16 +267,12 @@
 							var treeKeys = this.$refs.addTree.getCheckedKeys()
 							// 最终选中的包括半选中的节点数组
 							var ids = [];
-							debugger;
 							var tree = this.$refs.addTree;
 							this.getTreeNodes(treeKeys, ids, tree);
 							//去重复
 							this.addForm.menuIds = this.distinct(ids);
-
 							//this.addForm.menuIds = this.$refs.addTree.getCheckedKeys();
-							//var addParams = { name: this.addForm.name, username: this.addForm.username, password: this.addForm.password, mobile: this.addForm.mobile, email: this.addForm.email };
 							let para = this.addForm;
-							//para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
 							addRole(para).then((res,error) => {
 								this.addLoading = false;
 								let { msg, code, data } = res;
@@ -274,9 +282,8 @@
 										message: msg,
 										type: 'success'
 									});
-									this.$refs['addForm'].resetFields();
-									this.addFormVisible = false;
-									this.getRoles();
+									_this.handleDialogClose();
+									_this.getRoles();
 								}else{
 									this.$message({
 										message: msg,
@@ -293,6 +300,7 @@
 			},
 			//编辑
 			editSubmit: function () {
+				let _this = this;
 				this.$refs.editForm.validate((valid) => {
 					if (valid) {
 						this.$confirm('确认提交吗？', '提示', {}).then(() => {
@@ -304,12 +312,11 @@
 							// 最终选中的包括半选中的节点数组
 							var ids = [];
 							var tree = this.$refs.editTree;
-							debugger;
 							this.getTreeNodes(treeKeys, ids, tree);
 							//去重复
-							this.editForm.menuIds = this.distinct(ids);
-
 							let para = this.editForm;
+							para.menuIds = this.distinct(ids);
+
 							editRole(para).then((res,error) => {
 								this.editLoading = false;
 								let { msg, code, data } = res;
@@ -318,9 +325,8 @@
 										message: msg,
 										type: 'success'
 									});
-									this.$refs['editForm'].resetFields();
-									this.editFormVisible = false;
-									this.getRoles();
+									_this.handleDialogClose();
+									_this.getRoles();
 								}else{
 									this.$message({
 										message: msg,
@@ -343,7 +349,6 @@
 					type: 'warning'
 				}).then(() => {
 					this.listLoading = true;
-					debugger;
 					batchRemoveRole(ids).then((res) => {
 						this.listLoading = false;
 						let {msg, code, data} = res;

@@ -157,8 +157,8 @@
 		<el-col :span="24" class="main">
 			<!--导航菜单-->
 			<el-menu default-active="1-4-1" class="el-menu-vertical-demo"  :collapse="collapsed">
-				<template v-for="item in $router.options.routes">
-					<NavMenu :menu="item"></NavMenu>
+				<template v-for="(item) in menus">
+					<NavMenu :menu="item" :key="'key'+item.id"></NavMenu>
 				</template>
 			</el-menu>
 				<!-- <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="collapsed">
@@ -291,11 +291,9 @@
 				this.sysUserName = user.name || '';
 				this.sysUserAvatar = user.avatar || '';
 			}
-			debugger;
 			getLoginInfo().then((res) => {
-					sessionStorage.setItem('menus', JSON.stringify(res.data.menus));
-					debugger;
-					this.menus = res.data.menus;
+					sessionStorage.setItem('menus', JSON.stringify(res.menus));
+					this.menus = res.menus;
 				}).catch(() => {
 
 				});
