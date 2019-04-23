@@ -1,12 +1,15 @@
 <template>
-    <el-submenu v-if="menu.children != null && menu.children.length>0 " :index="'menu-index-'+menu.id" > 
+    <el-submenu v-if="menu.children != null && menu.children.length>0 " :index="'menu-index-'+menu.url" > 
         <template slot="title" > 
             <i :class="menu.icon"></i> 
             <span slot="title"> {{menu.name}}</span>
         </template>
-        <NavMenu :menu="item" v-for="(item,key) in menu.children" :key="key" ></NavMenu>
+        <NavMenu :menu="item" v-for="(item,key) in menu.children" :key="key"  @addTab="addTab" ></NavMenu>
     </el-submenu>
-    <el-menu-item v-else-if="menu.children == null || menu.children.length==0" :index="'menu-index-'+menu.id" @click="$router.push(menu.url)">{{menu.name}}</el-menu-item>
+    <el-menu-item v-else-if="menu.children == null || menu.children.length==0" :index="'menu-index-'+menu.id" @click="addTab(menu)" >
+        <i :class="menu.icon" v-if="menu.icon"></i>
+        <span slot="title">{{menu.name}}</span>
+    </el-menu-item>
 </template>
 
 <script>
@@ -16,7 +19,11 @@
         data() {
         return {}
         },
-        methods: {}
+        methods: {
+            addTab(item){
+                this.$emit('addTab', item)
+            }
+        }
     }
 </script>
 

@@ -13,8 +13,8 @@
 		</el-col>
 
         <!--列表-->
-		<el-table :data="menus" border highlight-current-row v-loading="listLoading" row-key="id" style="width: 100%;">
-			<el-table-column prop="name" label="菜单名称" />
+		<el-table :data="menus" border highlight-current-row v-loading="listLoading" type="expand" row-key="id" style="width: 100%;">
+			<el-table-column prop="name" label="菜单名称"  default-expand-all />
 			<el-table-column prop="icon" align="center" label="图标" width="100" sortable>
                 <template slot-scope="scope">
                     <i :class="scope.row.icon"></i>
@@ -29,6 +29,8 @@
 			<el-table-column prop="orderNum" label="排序" width="100" sortable>
 			</el-table-column>
             <el-table-column prop="url" label="路由" width="200" sortable>
+			</el-table-column>
+			<el-table-column prop="component" label="组件标识" width="200" sortable>
 			</el-table-column>
             <el-table-column prop="perms" label="授权标识" sortable>
 			</el-table-column>
@@ -90,6 +92,9 @@
 				<el-form-item label="授权表示" prop="perms">
 					<el-input v-model="addForm.perms" ></el-input>
 				</el-form-item>
+				<el-form-item prop="component" label="组件标识" width="200" sortable>
+					<el-input v-model="addForm.component" ></el-input>
+				</el-form-item>
 				<el-form-item label="图标" prop="icon">
 					<el-input v-model="addForm.icon" ></el-input>
 				</el-form-item>
@@ -123,6 +128,9 @@
 				</el-form-item>
 				<el-form-item label="授权表示" prop="perms">
 					<el-input v-model="editForm.perms" ></el-input>
+				</el-form-item>
+				<el-form-item prop="component" label="组件标识" width="200" sortable>
+					<el-input v-model="editForm.component" ></el-input>
 				</el-form-item>
 				<el-form-item label="图标" prop="icon">
 					<el-input v-model="editForm.icon" ></el-input>
@@ -164,6 +172,9 @@
 					orderNum: [
 						{ required: true, message: '排序不能为空', trigger: 'blur' }
 					],
+					component:[
+						{ required: true, message: '组件不能为空', trigger: 'blur' }
+					]
 				},
 				//新增界面数据
 				addForm: {
@@ -174,6 +185,7 @@
 					parentName: '',
 					url: '',
 					perms: '',
+					component: '',
 					icon: '',
 				},
 				editFormVisible: false,//新增界面是否显示
@@ -188,6 +200,9 @@
 					orderNum: [
 						{ required: true, message: '排序不能为空', trigger: 'blur' }
 					],
+					component:[
+						{ required: true, message: '组件不能为空', trigger: 'blur' }
+					]
 				},
 				//新增界面数据
 				editForm: {
@@ -197,6 +212,7 @@
 					parentId: null,
 					url: '',
 					perms: '',
+					component: '',
 					icon: '',
 				}
             }

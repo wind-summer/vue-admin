@@ -34,9 +34,9 @@ let routes = [
         iconCls: 'el-icon-setting',//图标样式class
         children: [
             //, hidden: true
-            { path: '/user', component: User, name: '用户管理', iconCls: 'el-icon-menu' },
-            { path: '/role', component: Role, name: '角色管理', iconCls: 'el-icon-menu' },
-            { path: '/menu', component: Menu, name: '菜单管理', iconCls: 'el-icon-menu' },
+            { path: '/user', components: { user : User}, name: '用户管理', iconCls: 'el-icon-menu' },
+            { path: '/role', components: { role : Role}, name: '角色管理', iconCls: 'el-icon-menu' },
+            { path: '/menu', components: { navmenu : Menu}, name: '菜单管理', iconCls: 'el-icon-menu' },
         ]
     },
     {
@@ -46,10 +46,10 @@ let routes = [
         iconCls: 'el-icon-mobile-phone',//图标样式class
         children: [
             //, hidden: true
-            { path: '/main', component: Main, name: '主页' },
-            { path: '/table', component: Table, name: 'Table' },
-            { path: '/form', component: Form, name: 'Form' },
-            { path: '/users', component: Users, name: '用户' },
+            { path: '/main', components: { main : Main}, name: '主页' },
+            { path: '/table', components: { table : Table}, name: 'Table' },
+            { path: '/form', components: { form : Form}, name: 'Form' },
+            { path: '/users', components: { user : Users}, name: '用户' }
         ]
     },
     // {
@@ -74,7 +74,9 @@ let routes = [
     // },
     {
         path: '/2',
-        component: Home,
+        components: {
+            home : Home
+        },
         name: 'Charts',
         iconCls: 'fa fa-bar-chart',
         children: [

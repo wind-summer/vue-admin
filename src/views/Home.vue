@@ -53,7 +53,7 @@
 				width:230px;
 			}
 			.logo-collapse-width{
-				width:160px
+				width:64px
 			}
 			.tools{
 				padding: 0px 23px;
@@ -156,9 +156,9 @@
 		</el-col>
 		<el-col :span="24" class="main">
 			<!--导航菜单-->
-			<el-menu default-active="1-4-1" class="el-menu-vertical-demo"  :collapse="collapsed">
+			<el-menu :default-active="$router.path" class="el-menu-vertical-demo" unique-opened :collapse="collapsed">
 				<template v-for="(item) in menus">
-					<NavMenu :menu="item" :key="'key'+item.id"></NavMenu>
+					<NavMenu :menu="item" :key="'key'+item.id" @addTab="addTab"></NavMenu>
 				</template>
 			</el-menu>
 				<!-- <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="collapsed">
@@ -203,22 +203,39 @@
 						</template>
 					</li>
 				</ul> -->
+			
 			<section class="content-container">
-				<div class="grid-content bg-purple-light">
+				<template>
+					<div class="custom-analysis page-wrap-tabs">
+						<el-tabs :value="currentTabValue" type="card" class="tabs-nopadding" @tab-click="onTabClick">
+							<el-tab-pane label="主页" name="1"><router-view name='main'></router-view></el-tab-pane>
+							<el-tab-pane v-for="option in editableTabs" closable :label="option.title" :name="option.id" :key="'key-'+option.id" >
+								<keep-alive><router-view :name="option.component"></router-view></keep-alive>	
+							</el-tab-pane>
+						</el-tabs>
+					</div>
+				</template>
+				<!-- <div class="grid-content bg-purple-light">
 					<el-col :span="24" class="breadcrumb-container">
 						<strong class="title">{{$route.name}}</strong>
 						<el-breadcrumb separator="/" class="breadcrumb-inner">
-							<el-breadcrumb-item v-for="item in $route.matched" :key="item.path">
+							<el-breadcrumb-item v-for="item in $route.matched" :key="item.id">
 								{{ item.name }}
 							</el-breadcrumb-item>
 						</el-breadcrumb>
 					</el-col>
 					<el-col :span="24" class="content-wrapper">
-						<transition name="fade" mode="out-in">
+						<p class="page-title">项目管理</p>
+						 <el-tabs type="card" v-model="$route.name" class="tabs-nopadding" @tab-remove="removeTab" @tab-click="onTabClick" >
+							<el-tab-pane label="主页" name="main"></el-tab-pane>
+							<el-tab-pane v-for="option in editableTabs" :label="option.title" :name="option.name"></el-tab-pane>
+						</el-tabs>
+						<transition name="el-zoom-in-top" mode="out-in">
 							<router-view></router-view>
 						</transition>
+						
 					</el-col>
-				</div>
+				</div> -->
 			</section>
 		</el-col>
 	</el-row>
@@ -233,6 +250,13 @@
 		},
 		data() {
 			return {
+				// editableTabs: [{
+				// 	title: 'Tab 1',
+				// 	name: '1',
+				// 	content: 'Tab 1 content'
+				// 	}],
+				currentTabValue: '1',
+				editableTabs: [],
 				sysName:'ADMIN',
 				collapsed:false,
 				menus: [],
@@ -251,6 +275,48 @@
 			}
 		},
 		methods: {
+			addTab(menu){
+				//判断tab数量是否超过阈值：暂设12
+				var max = 5;
+				if(this.editableTabs.length >= max){
+					this.$message({
+                  message: 'tab页面超过'+max+',请关闭没用tab页面',
+                  type: 'error'
+                });
+					return;
+				}
+
+				let newTabName = menu.name;
+				let tabId = menu.id.toString();
+				let tab = this.editableTabs.filter((tab) => {
+						return tab.id === tabId;
+					})[0];
+				//要添加的tabs 当前的tab数组里面有没有
+				if(!!tab){
+					this.currentTabValue = tabId;
+					this.$router.push(menu.url);
+					return;
+				}
+
+				this.editableTabs.push({
+					id: tabId.toString(),
+					title: newTabName,
+					component: menu.component,
+					url: menu.url
+				});
+				this.currentTabValue = tabId;
+				this.$router.push(menu.url);
+			},
+			onTabClick(tab){
+				debugger;
+				let checkTab = this.editableTabs.filter((t) => {
+						return t.id === tab.name;
+					})[0];
+				this.$router.push(checkTab.url);
+			},
+			removeTab(){
+
+			},
 			onSubmit() {
 				console.log('submit!');
 			},
@@ -291,14 +357,26 @@
 				this.sysUserName = user.name || '';
 				this.sysUserAvatar = user.avatar || '';
 			}
+			debugger;
+			let _this = this;
 			getLoginInfo().then((res) => {
 					sessionStorage.setItem('menus', JSON.stringify(res.menus));
-					this.menus = res.menus;
+					_this.menus = res.menus;
+					
+					
 				}).catch(() => {
 
-				});
-
-
+			});
+			$router.push("/main");
+			// debugger;
+			// let menu = res.menus.filter((m) => {
+			// 	return m.url === this.$router.path;
+			// })[0];
+			// if(!!menu){
+			// 	this.addTab(menu);
+			// }
+			
+			
 		}
 	}
 
