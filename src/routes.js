@@ -8,6 +8,8 @@ import Users from './views/nav1/User.vue'
 import User from './views/system/User.vue'
 import Role from './views/system/Role.vue'
 import Menu from './views/system/Menu.vue'
+import Config from './views/system/Config.vue'
+import Dictionary from './views/system/dictionary.vue'
 import Page4 from './views/nav2/Page4.vue'
 import Page5 from './views/nav2/Page5.vue'
 import Page6 from './views/nav3/Page6.vue'
@@ -37,6 +39,8 @@ let routes = [
             { path: '/user', components: { user : User}, name: '用户管理', iconCls: 'el-icon-menu' },
             { path: '/role', components: { role : Role}, name: '角色管理', iconCls: 'el-icon-menu' },
             { path: '/menu', components: { navmenu : Menu}, name: '菜单管理', iconCls: 'el-icon-menu' },
+            { path: '/config', components: { config : Config}, name: '配置管理', iconCls: 'el-icon-menu' },
+            { path: '/dictionary', components: { dictionary : Dictionary}, name: '字典管理', iconCls: 'el-icon-menu' },
         ]
     },
     {

@@ -296,6 +296,7 @@
 				this.editForm.name = row.name;
 				this.editForm.email = row.email;
 				this.editForm.mobile = row.mobile;
+				this.editForm.username = row.username;
 				if(row.status===1){
 					this.editForm.status = 'ENABLE';
 				}else{

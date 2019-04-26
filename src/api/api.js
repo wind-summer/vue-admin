@@ -18,7 +18,6 @@ export const editUser = params => { return instance.put(`${base}/sys/user`,  par
 export const batchRemoveUser = params => { return instance.delete(`${base}/sys/user/${params}`, params).then(res => res.data); };
 export const getLoginInfo = params => { return instance.get(`${base}/sys/user/loginInfo`, {}).then(res => res.data); };
 
-
 //菜单管理接口
 export const getMenuList = params => { return instance.get(`${base}/sys/menus`, {}); };
 export const getParentTrees = params => { return instance.get(`${base}/sys/menu/parentTrees`, {}); };
@@ -33,6 +32,14 @@ export const addRole = params => { return instance.post(`${base}/sys/role`, para
 export const editRole = params => { return instance.put(`${base}/sys/role`, params).then(res => res.data); };
 export const getRoleAndMenusInfo = params => { return instance.get(`${base}/sys/role/${params}/detail`, params); };
 export const batchRemoveRole = params => { return instance.delete(`${base}/sys/role/${params}`, params).then(res => res.data); };
+
+//配置管理接口
+export const getConfigPage =params => { return instance.get(`${base}/sys/config`, { params: params }); };
+export const addConfig = params => { return instance.post(`${base}/sys/config`, params).then(res => res.data); };
+export const editConfig = params => { return instance.put(`${base}/sys/config`, params).then(res => res.data); };
+export const batchRemoveConfig = params => { return instance.delete(`${base}/sys/config/${params}`, params).then(res => res.data); };
+
+
 
 // http request 请求拦截器，有token值则配置上token值
 instance.interceptors.request.use((request, _this) => {

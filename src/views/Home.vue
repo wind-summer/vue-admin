@@ -156,7 +156,7 @@
 		</el-col>
 		<el-col :span="24" class="main">
 			<!--导航菜单-->
-			<el-menu :default-active="$router.path" class="el-menu-vertical-demo" unique-opened :collapse="collapsed">
+			<el-menu :default-active="defaultActive" ref="navmenu" class="el-menu-vertical-demo" unique-opened :collapse="collapsed">
 				<template v-for="(item) in menus">
 					<NavMenu :menu="item" :key="'key'+item.id" @addTab="addTab"></NavMenu>
 				</template>
@@ -207,9 +207,10 @@
 			<section class="content-container">
 				<template>
 					<div class="custom-analysis page-wrap-tabs">
-						<el-tabs :value="currentTabValue" type="card" class="tabs-nopadding" @tab-click="onTabClick">
-							<el-tab-pane label="主页" name="1"><router-view name='main'></router-view></el-tab-pane>
-							<el-tab-pane v-for="option in editableTabs" closable :label="option.title" :name="option.id" :key="'key-'+option.id" >
+						<el-tabs :value="currentTabValue" type="card" class="tabs-nopadding" @tab-click="onTabClick" @tab-remove="removeTab">
+							<!-- <el-tab-pane label="主页" name="1"><router-view name='main'></router-view></el-tab-pane> -->
+							<!-- :closable="option.isDelete" -->
+							<el-tab-pane v-for="option in editableTabs" :closable="option.isDelete" :label="option.title" :name="option.url" :key="'key-'+option.url" >
 								<keep-alive><router-view :name="option.component"></router-view></keep-alive>	
 							</el-tab-pane>
 						</el-tabs>
@@ -250,13 +251,14 @@
 		},
 		data() {
 			return {
-				// editableTabs: [{
-				// 	title: 'Tab 1',
-				// 	name: '1',
-				// 	content: 'Tab 1 content'
-				// 	}],
-				currentTabValue: '1',
-				editableTabs: [],
+				defaultActive: '',
+				currentTabValue: '0',
+				editableTabs: [{
+					title: '主页',
+					component: 'main',
+					url: '/main',
+					isDelete: false
+				}],
 				sysName:'ADMIN',
 				collapsed:false,
 				menus: [],
@@ -275,56 +277,67 @@
 			}
 		},
 		methods: {
+			//添加tab
 			addTab(menu){
 				//判断tab数量是否超过阈值：暂设12
-				var max = 5;
-				if(this.editableTabs.length >= max){
-					this.$message({
-                  message: 'tab页面超过'+max+',请关闭没用tab页面',
-                  type: 'error'
-                });
-					return;
-				}
-
 				let newTabName = menu.name;
-				let tabId = menu.id.toString();
+				let tabUrl = menu.url;
 				let tab = this.editableTabs.filter((tab) => {
-						return tab.id === tabId;
+						return tab.url === tabUrl;
 					})[0];
 				//要添加的tabs 当前的tab数组里面有没有
 				if(!!tab){
-					this.currentTabValue = tabId;
+					this.currentTabValue = tabUrl;
 					this.$router.push(menu.url);
 					return;
 				}
 
+				var max = 12;
+				if(this.editableTabs.length >= max){
+					this.$message({
+						message: 'tab页面超过'+max+',请关闭没用tab页面',
+						type: 'error'
+					});
+					return;
+				}
+
 				this.editableTabs.push({
-					id: tabId.toString(),
 					title: newTabName,
 					component: menu.component,
-					url: menu.url
+					url: menu.url,
+					isDelete : true
 				});
-				this.currentTabValue = tabId;
+				this.currentTabValue = tabUrl;
 				this.$router.push(menu.url);
 			},
+			//点击tab事件
 			onTabClick(tab){
-				debugger;
 				let checkTab = this.editableTabs.filter((t) => {
-						return t.id === tab.name;
+						return t.url === tab.name;
 					})[0];
+				this.defaultActive = checkTab.url;
 				this.$router.push(checkTab.url);
 			},
-			removeTab(){
-
+			//移除tab
+			removeTab(targetName){
+				let tabs = this.editableTabs;
+				let activeName = this.currentTabValue;
+				if (activeName === targetName) {
+					tabs.forEach((tab, index) => {
+						if (tab.url === targetName) {
+							let nextTab = tabs[index + 1] || tabs[index - 1];
+							if (nextTab) {
+								activeName = nextTab.url;
+							}
+						}
+					});
+				}
+				let tabObject = {name: activeName};
+				this.onTabClick(tabObject);
+				this.editableTabs = tabs.filter(tab => tab.url !== targetName);
 			},
 			onSubmit() {
 				console.log('submit!');
-			},
-			handleopen() {
-				//console.log('handleopen');
-			},
-			handleclose() {
-				//console.log('handleclose');
 			},
 			handleselect: function (a, b) {
 			},
@@ -357,26 +370,24 @@
 				this.sysUserName = user.name || '';
 				this.sysUserAvatar = user.avatar || '';
 			}
-			debugger;
 			let _this = this;
+			//加载用户登录信息
 			getLoginInfo().then((res) => {
 					sessionStorage.setItem('menus', JSON.stringify(res.menus));
 					_this.menus = res.menus;
-					
-					
 				}).catch(() => {
 
 			});
-			$router.push("/main");
-			// debugger;
-			// let menu = res.menus.filter((m) => {
-			// 	return m.url === this.$router.path;
-			// })[0];
-			// if(!!menu){
-			// 	this.addTab(menu);
-			// }
-			
-			
+			//设置菜单选中高亮
+			this.defaultActive = this.$router.currentRoute.path;
+		},
+		updated(name){
+			//加载完成之后触发点击操作
+			//TODO 判断tab里面是否已经有了
+			let selectMenu = document.getElementById("menuItem:"+this.$router.currentRoute.path);
+			if(selectMenu !== null){
+				selectMenu.click();
+			}
 		}
 	}
 
