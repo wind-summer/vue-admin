@@ -137,7 +137,7 @@
                 <el-table-column label="操作" width="350" header-align="center" align="center" >
                     <template slot-scope="scope">
                         <el-button-group>
-                            <el-button type="primary" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+                            <el-button type="primary" icon="el-icon-edit" @click="handleSonEdit(scope.$index, scope.row)">修改</el-button>
                             <el-button type="danger" icon="el-icon-delete" @click="handleDel(scope.$index, scope.row)">删除</el-button>
                         </el-button-group>
                         <!-- <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -176,6 +176,28 @@
                 <el-button type="primary" @click.native="addSonSubmit" :loading="addLoading">提交</el-button>
             </div>
         </el-dialog>
+        <!--修改字典项界面-->
+        <el-dialog title="新增字典项" :visible.sync="editFormSonVisible" close-on-click-modal width="30%" >
+            <el-form :model="sonEditForm" status-icon :rules="sonEditFormRules" ref="sonEditForm" label-width="80px" class="demo-ruleForm">
+                <el-form-item label="名称" prop="dictName">
+                    <el-input v-model="sonEditForm.dictName"></el-input>
+                </el-form-item>
+                <el-form-item label="值" prop="dictValue">
+                    <el-input v-model="sonEditForm.dictValue"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" prop="remark">
+                    <el-input v-model="sonEditForm.remark" ></el-input>
+                </el-form-item>
+                <el-form-item label="排序" prop="sortNo">
+                    <el-input-number v-model="sonEditForm.sortNo" controls-position="right" :min="0" :max="1000"></el-input-number>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click.native="editFormSonVisible = false">取消</el-button>
+                <el-button type="primary" @click.native="addSonSubmit" :loading="addLoading">提交</el-button>
+            </div>
+        </el-dialog>
+        
 	</section>
 </template>
 <script>
@@ -225,6 +247,21 @@
 				},
 				//新增界面数据
 				sonAddForm: {
+					dictName: '',
+					dictValue: '',
+                    remark: '',
+                    sortNo: 0
+                },
+                sonEditFormRules: {
+					dictValue: [
+						{ required: true, message: '请输入值', trigger: 'blur' }
+                    ],
+                    dictName: [
+						{ required: true, message: '请输名称', trigger: 'blur' }
+                    ],
+				},
+				//内-修改界面数据
+				sonEditForm: {
 					dictName: '',
 					dictValue: '',
                     remark: '',
@@ -461,6 +498,17 @@
 						});
 					}
 				});
+            },
+            handleSonEdit: function (index, row) {
+                this.sonEditFormRules = true;
+				this.sonEditForm = {
+					id: row.id,
+					dictName: row.dictName,
+                    dictType: row.dictType,
+                    dictValue: row.dictValue,
+                    remark: row.remark,
+                    sortNo: row.sortNo
+				};
             },
 			//--------删除部分--------
 			handleDel: function (index, row) {
