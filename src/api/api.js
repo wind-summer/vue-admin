@@ -39,6 +39,11 @@ export const addConfig = params => { return instance.post(`${base}/sys/config`, 
 export const editConfig = params => { return instance.put(`${base}/sys/config`, params).then(res => res.data); };
 export const batchRemoveConfig = params => { return instance.delete(`${base}/sys/config/${params}`, params).then(res => res.data); };
 
+//字典管理接口
+export const getDictionaryPage =params => { return instance.get(`${base}/sys/dictionary`, { params: params }); };
+export const addDictionary = params => { return instance.post(`${base}/sys/dictionary`, params).then(res => res.data); };
+export const editDictionary = params => { return instance.put(`${base}/sys/dictionary`, params).then(res => res.data); };
+
 
 
 // http request 请求拦截器，有token值则配置上token值

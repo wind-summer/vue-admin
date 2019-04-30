@@ -16,20 +16,20 @@
 		</el-col>
 
 		<!--列表-->
-		<el-table :data="pageObjects" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
+		<el-table :data="pageObjects" border highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
 			<el-table-column type="selection" width="55">
 			</el-table-column>
 			<el-table-column type="index" width="60">
 			</el-table-column>
-			<el-table-column prop="code" label="编码" width="150" sortable>
+			<el-table-column prop="code" header-align="center" align="center" label="编码" width="300">
 			</el-table-column>
-            <el-table-column prop="value" label="值" width="150" sortable>
+            <el-table-column prop="value" header-align="center" align="center" label="值" width="300">
 			</el-table-column>
-			<el-table-column prop="remark" label="备注" sortable>
+			<el-table-column prop="remark" header-align="center" align="center" label="备注">
 			</el-table-column>
-			<el-table-column prop="createTime" label="创建时间" width="190" sortable>
+			<el-table-column prop="createTime" label="创建时间" width="190" header-align="center" align="center" sortable>
 			</el-table-column>
-			<el-table-column label="操作" width="150" >
+			<el-table-column label="操作" width="150" header-align="center" align="center" >
 				<template slot-scope="scope">
 					<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
 					<el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
