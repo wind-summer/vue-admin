@@ -20,10 +20,10 @@
 
 		<!--列表-->
 		<el-table :data="pageObjects" highlight-current-row border  v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
-			<el-table-column type="selection" width="55">
-			</el-table-column>
-			<el-table-column type="index" label="序号" width="60">
-			</el-table-column>
+				<!-- <el-table-column type="selection" width="55">
+				</el-table-column> -->
+			<!-- <el-table-column type="index" label="序号" width="60">
+			</el-table-column> -->
 			<el-table-column prop="dictName" header-align="center" align="center" label="名称" width="250" >
 			</el-table-column>
             <el-table-column prop="dictType" label="类型" header-align="center" align="center" width="250" >
@@ -83,7 +83,7 @@
 					<el-input v-model="editForm.dictName"></el-input>
 				</el-form-item>
                 <el-form-item label="类型" prop="dictType">
-					<el-input v-model="editForm.dictType"></el-input>
+					<el-input v-model="editForm.dictType" disabled></el-input>
 				</el-form-item>
 				<el-form-item label="备注" prop="remark">
 					<el-input v-model="editForm.remark" ></el-input>
@@ -119,14 +119,16 @@
             </el-col>
 
             <!--列表-->
-            <el-table :data="pageSonObjects" highlight-current-row border  v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
+            <el-table :data="pageSonObjects" highlight-current-row border  v-loading="listLoading" @selection-change="selsSonChange" style="width: 100%;">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
-                <el-table-column type="index" label="序号" width="60">
+                <!-- <el-table-column type="index" label="序号" width="60">
+                </el-table-column> -->
+                <el-table-column prop="dictName" header-align="center" align="center" label="名称" width="150" >
                 </el-table-column>
-                <el-table-column prop="dictName" header-align="center" align="center" label="名称" width="250" >
+				<el-table-column prop="dictValue" label="值" header-align="center" align="center" width="150" >
                 </el-table-column>
-                <el-table-column prop="dictType" label="类型" header-align="center" align="center" width="250" >
+                <el-table-column prop="dictType" label="类型" header-align="center" align="center" width="150" >
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" header-align="center" align="center" >
                 </el-table-column>
@@ -134,11 +136,11 @@
                 </el-table-column>
                 <el-table-column prop="createTime" label="创建时间" width="190" header-align="center" align="center" sortable>
                 </el-table-column>
-                <el-table-column label="操作" width="350" header-align="center" align="center" >
+                <el-table-column label="操作" width="250" header-align="center" align="center" >
                     <template slot-scope="scope">
                         <el-button-group>
                             <el-button type="primary" icon="el-icon-edit" @click="handleSonEdit(scope.$index, scope.row)">修改</el-button>
-                            <el-button type="danger" icon="el-icon-delete" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+                            <el-button type="danger" icon="el-icon-delete" @click="handleSonDel(scope.$index, scope.row)">删除</el-button>
                         </el-button-group>
                         <!-- <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="small" size="small" @click="openSonDicts(scope.row)">字典配置</el-button>
@@ -149,7 +151,7 @@
 
             <!--工具条-->
             <el-row :span="24" class="toolbar">
-                <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
+                <el-button type="danger" @click="batchSonRemove" :disabled="this.sonSels.length===0">批量删除</el-button>
                 <el-pagination background layout="prev, pager, next" @current-change="handleSonCurrentChange" :page-size="sonSize" :total="sonTotal" style="float:right;">
                 </el-pagination>
             </el-row>
@@ -194,14 +196,14 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="editFormSonVisible = false">取消</el-button>
-                <el-button type="primary" @click.native="addSonSubmit" :loading="addLoading">提交</el-button>
+                <el-button type="primary" @click.native="editSonSubmit" :loading="addLoading">提交</el-button>
             </div>
         </el-dialog>
         
 	</section>
 </template>
 <script>
-	import { getDictionaryPage, addDictionary, editDictionary } from '../../api/api';
+	import { getDictionaryPage, addDictionary, editDictionary, batchRemoveDictionary } from '../../api/api';
 
 	export default {
 		data() {
@@ -230,7 +232,7 @@
                 pageSonObjects: [],
                 sonTotal: 0,
 				sonPage: 1,
-                sonSize: 2,
+                sonSize: 10,
                 sonSels: [],
 				// total: 0,
 				// page: 1,
@@ -251,7 +253,9 @@
 					dictValue: '',
                     remark: '',
                     sortNo: 0
-                },
+				},
+				//内-修改界面数据
+				editFormSonVisible: false,
                 sonEditFormRules: {
 					dictValue: [
 						{ required: true, message: '请输入值', trigger: 'blur' }
@@ -260,8 +264,8 @@
 						{ required: true, message: '请输名称', trigger: 'blur' }
                     ],
 				},
-				//内-修改界面数据
 				sonEditForm: {
+					id: 0,
 					dictName: '',
 					dictValue: '',
                     remark: '',
@@ -454,7 +458,7 @@
             },
             openSonDicts: function (row) {
                 this.sonDictListVisible = true;
-                this.sonListLoading = true;
+                //this.sonListLoading = true;
                 this.sonFilters.pid = row.id;
                 this.sonFilters.dictType = row.dictType;
                 this.getSonPages();
@@ -500,7 +504,7 @@
 				});
             },
             handleSonEdit: function (index, row) {
-                this.sonEditFormRules = true;
+                this.editFormSonVisible = true;
 				this.sonEditForm = {
 					id: row.id,
 					dictName: row.dictName,
@@ -509,6 +513,37 @@
                     remark: row.remark,
                     sortNo: row.sortNo
 				};
+			},
+			editSonSubmit(){
+                this.$refs.sonEditForm.validate((valid) => {
+					let _this = this;
+					if (valid) {
+						this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                            debugger;
+							this.addLoading = true;
+                            let para = _this.sonEditForm;
+                            para.dictType = _this.sonFilters.dictType;
+                            para.pid = _this.sonFilters.pid;
+							editDictionary(para).then((res,error) => {
+								this.addLoading = false;
+								let { msg, code, data } = res;
+								if(code == 0){
+									this.$message({
+										message: msg,
+										type: 'success'
+									});
+									_this.editFormSonVisible=false;
+									_this.getSonPages();
+								}else{
+									this.$message({
+										message: msg,
+										type: 'error'
+									});
+								}
+							});
+						});
+					}
+				});
             },
 			//--------删除部分--------
 			handleDel: function (index, row) {
@@ -516,7 +551,7 @@
 					type: 'warning'
 				}).then(() => {
 					this.listLoading = true;
-					batchRemoveConfig(row.id).then((res) => {
+					batchRemoveDictionary(row.id).then((res) => {
 						this.listLoading = false;
 						let {msg, code, data} = res;
 						if(code == 0){
@@ -535,7 +570,62 @@
 				}).catch(() => {
 
 				});
-            },
+			},
+			handleSonDel: function (index, row) {
+				this.$confirm('确认删除该记录吗?', '提示', {
+					type: 'warning'
+				}).then(() => {
+					this.listLoading = true;
+					batchRemoveDictionary(row.id).then((res) => {
+						this.listLoading = false;
+						let {msg, code, data} = res;
+						if(code == 0){
+							this.$message({
+								message: msg,
+								type: 'success'
+							});
+							this.getSonPages();
+						}else{
+							this.$message({
+								message: msg,
+								type: 'error'
+							});
+						}
+					});
+				}).catch(() => {
+
+				});
+			},
+			selsSonChange: function (sels) {
+				this.sonSels = sels;
+			},
+			//批量删除
+			batchSonRemove: function () {
+				var ids = this.sonSels.map(item => item.id).toString();
+				this.$confirm('确认删除选中记录吗？', '提示', {
+					type: 'warning'
+				}).then(() => {
+					this.listLoading = true;
+					batchRemoveDictionary(ids).then((res) => {
+						this.listLoading = false;
+						let {msg, code, data} = res;
+						if(code == 0){
+							this.$message({
+								message: msg,
+								type: 'success'
+							});
+							this.getSonPages();
+						}else{
+							this.$message({
+								message: msg,
+								type: 'error'
+							});
+						}
+					});
+				}).catch(() => {
+
+				});
+			},
             selsChange: function (sels) {
 				this.sels = sels;
             },

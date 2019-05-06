@@ -43,6 +43,7 @@ export const batchRemoveConfig = params => { return instance.delete(`${base}/sys
 export const getDictionaryPage =params => { return instance.get(`${base}/sys/dictionary`, { params: params }); };
 export const addDictionary = params => { return instance.post(`${base}/sys/dictionary`, params).then(res => res.data); };
 export const editDictionary = params => { return instance.put(`${base}/sys/dictionary`, params).then(res => res.data); };
+export const batchRemoveDictionary = params => { return instance.delete(`${base}/sys/dictionary/${params}`, params).then(res => res.data); };
 
 
 
