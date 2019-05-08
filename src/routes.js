@@ -9,7 +9,8 @@ import User from './views/system/User.vue'
 import Role from './views/system/Role.vue'
 import Menu from './views/system/Menu.vue'
 import Config from './views/system/Config.vue'
-import Dictionary from './views/system/dictionary.vue'
+import Dictionary from './views/system/Dictionary.vue'
+import Schedule from './views/system/Schedule.vue'
 import Page4 from './views/nav2/Page4.vue'
 import Page5 from './views/nav2/Page5.vue'
 import Page6 from './views/nav3/Page6.vue'
@@ -41,6 +42,8 @@ let routes = [
             { path: '/menu', components: { navmenu : Menu}, name: '菜单管理', iconCls: 'el-icon-menu' },
             { path: '/config', components: { config : Config}, name: '配置管理', iconCls: 'el-icon-menu' },
             { path: '/dictionary', components: { dictionary : Dictionary}, name: '字典管理', iconCls: 'el-icon-menu' },
+            { path: '/schedule', components: { schedule : Schedule}, name: '定时任务', iconCls: 'el-icon-menu' },
+            { path: '/echarts', components: {echarts:echarts}, name: 'echarts' }
         ]
     },
     {
@@ -84,7 +87,7 @@ let routes = [
         name: 'Charts',
         iconCls: 'fa fa-bar-chart',
         children: [
-            { path: '/echarts', component: echarts, name: 'echarts' }
+            //{ path: '/echarts', components: {echarts:echarts}, name: 'echarts' }
         ]
     },
     {

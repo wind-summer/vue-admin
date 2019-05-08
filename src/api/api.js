@@ -45,6 +45,16 @@ export const addDictionary = params => { return instance.post(`${base}/sys/dicti
 export const editDictionary = params => { return instance.put(`${base}/sys/dictionary`, params).then(res => res.data); };
 export const batchRemoveDictionary = params => { return instance.delete(`${base}/sys/dictionary/${params}`, params).then(res => res.data); };
 
+//定时任务
+export const getSchedulePage =params => { return instance.get(`${base}/sys/schedule/page`, { params: params }); };
+export const addSchedule = params => { return instance.post(`${base}/sys/schedule/save`, params).then(res => res.data); };
+export const editSchedule = params => { return instance.put(`${base}/sys/schedule/update`, params).then(res => res.data); };
+export const runSchedule = params => { return instance.put(`${base}/sys/schedule/run`, params).then(res => res.data); };
+export const pauseSchedule = params => { return instance.put(`${base}/sys/schedule/pause`, params).then(res => res.data); };
+export const resumeSchedule = params => { return instance.put(`${base}/sys/schedule/resume`, params).then(res => res.data); };
+export const batchRemoveSchedule = params => { return instance.delete(`${base}/sys/schedule/${params}`, params).then(res => res.data); };
+
+export const getScheduleLogPage =params => { return instance.get(`${base}/sys/scheduleLog/page`, { params: params }); };
 
 
 // http request 请求拦截器，有token值则配置上token值

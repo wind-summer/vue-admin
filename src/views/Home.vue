@@ -156,7 +156,7 @@
 		</el-col>
 		<el-col :span="24" class="main">
 			<!--导航菜单-->
-			<el-menu :default-active="defaultActive" ref="navmenu" class="el-menu-vertical-demo" unique-opened :collapse="collapsed">
+			<el-menu background-color="#212121" text-color="#fff" active-text-color="#00F5FF" :default-active="defaultActive" ref="navmenu" class="el-menu-vertical-demo" unique-opened :collapse="collapsed">
 				<template v-for="(item) in menus">
 					<NavMenu :menu="item" :key="'key'+item.id" @addTab="addTab"></NavMenu>
 				</template>
