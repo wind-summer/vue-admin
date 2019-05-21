@@ -11,6 +11,9 @@ import Menu from './views/system/Menu.vue'
 import Config from './views/system/Config.vue'
 import Dictionary from './views/system/Dictionary.vue'
 import Schedule from './views/system/Schedule.vue'
+import ApiManage from './views/system/ApiManage.vue'
+import SqlManage from './views/system/SqlManage.vue'
+
 import Page4 from './views/nav2/Page4.vue'
 import Page5 from './views/nav2/Page5.vue'
 import Page6 from './views/nav3/Page6.vue'
@@ -43,7 +46,10 @@ let routes = [
             { path: '/config', components: { config : Config}, name: '配置管理', iconCls: 'el-icon-menu' },
             { path: '/dictionary', components: { dictionary : Dictionary}, name: '字典管理', iconCls: 'el-icon-menu' },
             { path: '/schedule', components: { schedule : Schedule}, name: '定时任务', iconCls: 'el-icon-menu' },
-            { path: '/echarts', components: {echarts:echarts}, name: 'echarts' }
+            { path: '/echarts', components: {echarts:echarts}, name: 'echarts' },
+            { path: '/api', components: {apiManage : ApiManage}, name: '接口管理' },
+            { path: '/sql', components: {sqlManage : SqlManage}, name: 'SQL监控' }
+            
         ]
     },
     {
@@ -57,6 +63,18 @@ let routes = [
             { path: '/table', components: { table : Table}, name: 'Table' },
             { path: '/form', components: { form : Form}, name: 'Form' },
             { path: '/users', components: { user : Users}, name: '用户' }
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '流程管理',
+        iconCls: '',//图标样式class
+        children: [
+            //, hidden: true
+            { path: '/flowInstance', components: { main : Form}, name: '流程实例' },
+            { path: '/taskHistory', components: { table : Form}, name: '历史任务' },
+            { path: '/flowHistory', components: { form : echarts}, name: '历史流程' },
         ]
     },
     // {
@@ -79,17 +97,17 @@ let routes = [
     //         { path: '/page6', component: Page6, name: '导航三' }
     //     ]
     // },
-    {
-        path: '/2',
-        components: {
-            home : Home
-        },
-        name: 'Charts',
-        iconCls: 'fa fa-bar-chart',
-        children: [
-            //{ path: '/echarts', components: {echarts:echarts}, name: 'echarts' }
-        ]
-    },
+    // {
+    //     path: '/2',
+    //     components: {
+    //         home : Home
+    //     },
+    //     name: 'Charts',
+    //     iconCls: 'fa fa-bar-chart',
+    //     children: [
+    //         //{ path: '/echarts', components: {echarts:echarts}, name: 'echarts' }
+    //     ]
+    // },
     {
         path: '*',
         hidden: true,

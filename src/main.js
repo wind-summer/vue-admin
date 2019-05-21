@@ -15,9 +15,9 @@ import Mock from './mock'
 Mock.bootstrap();
 import 'font-awesome/css/font-awesome.min.css'
 
-import ElTreeGrid from 'element-tree-grid';
+// import ElTreeGrid from 'element-tree-grid';
 
-Vue.component(ElTreeGrid.name, ElTreeGrid);
+// Vue.component(ElTreeGrid.name, ElTreeGrid);
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(Vuex)

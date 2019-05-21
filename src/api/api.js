@@ -6,6 +6,10 @@ var instance = axios.create({
 
 let base = 'http://localhost:8090/admin';
 
+export const uploadUserLogoUrl = base + "/sys/file/upload/userLogo";
+
+export const ipAddress = base;
+
 //登录
 export const requestLogin = params => { return instance.post(`${base}/sys/login/sign_in`, params).then(res => res.data); };
 
@@ -55,6 +59,10 @@ export const resumeSchedule = params => { return instance.put(`${base}/sys/sched
 export const batchRemoveSchedule = params => { return instance.delete(`${base}/sys/schedule/${params}`, params).then(res => res.data); };
 
 export const getScheduleLogPage =params => { return instance.get(`${base}/sys/scheduleLog/page`, { params: params }); };
+
+//主页
+export const mainDashboardData =params => { return instance.get(`${base}/sys/main/dashboard`, {}); };
+
 
 
 // http request 请求拦截器，有token值则配置上token值

@@ -72,6 +72,16 @@
 						<el-option v-for="item in roleDropList" :key="item.id" :label="item.name" :value="item.id"> </el-option>
 					</el-select>
 				</el-form-item>
+				<el-form-item label="头像" prop="avatar">
+					<el-upload
+						class="avatar-uploader"
+						:action="uploadUserLogoUrl"
+						:show-file-list="false"
+						:on-success="uploadAvatarOnSuccess" >
+						<img v-if="editForm.avatar" :src="ipAddress+editForm.avatar" class="avatar">
+						<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+					</el-upload>
+				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editFormVisible = false">取消</el-button>
@@ -108,6 +118,16 @@
 						<el-option v-for="item in roleDropList" :key="item.id" :label="item.name" :value="item.id"> </el-option>
 					</el-select>
 				</el-form-item>
+				<el-form-item label="头像" prop="avatar">
+					<el-upload
+						class="avatar-uploader"
+						:action="uploadUserLogoUrl"
+						:show-file-list="false"
+						:on-success="uploadAvatarOnSuccess" >
+						<img v-if="isUpload" :src="ipAddress+addForm.avatar" class="avatar">
+						<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+					</el-upload>
+				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="addFormVisible = false">取消</el-button>
@@ -119,7 +139,7 @@
 
 <script>
 	import util from '../../common/js/util'
-	import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getRoleDropList, getUserInfo } from '../../api/api';
+	import { getUserListPage, removeUser, batchRemoveUser, editUser, addUser, getRoleDropList, getUserInfo, uploadUserLogoUrl,ipAddress} from '../../api/api';
 
 	export default {
 		data() {
@@ -153,6 +173,10 @@
 				}
 			};
 			return {
+				uploadUserLogoUrl: uploadUserLogoUrl,
+				ipAddress: ipAddress,
+				isUpload: false,
+				fileList:[],
 				filters: {
 					name: ''
 				},
@@ -183,6 +207,7 @@
 					name: '',
 					mobile: '',
 					email: '',
+					avatar: '',
 					status: 'ENABLE',
 					roleIds: []
 				},
@@ -217,13 +242,26 @@
 					password2: '',
 					mobile: '',
 					email: '',
+					avatar: '',
 					status: 'ENABLE',
 					roleIds: []
 				}
 
 			}
 		},
-		methods: {
+		methods: {	
+			uploadAvatarOnSuccess(response, file, fileList){
+				debugger;
+				//把url赋值给avatar
+				this.addForm.avatar = response.data;
+				this.editForm.avatar = response.data;
+				this.isUpload = true;
+			},
+			uploadAvatarOnRemove(){
+				debugger;
+				this.addForm.avatar = '';
+				this.editForm.avatar = '';
+			},
 			filterTag(value, row) {
 				return row.status === value;
 			},
@@ -297,6 +335,7 @@
 				this.editForm.email = row.email;
 				this.editForm.mobile = row.mobile;
 				this.editForm.username = row.username;
+				this.editForm.avatar = row.avatar;
 				if(row.status===1){
 					this.editForm.status = 'ENABLE';
 				}else{
@@ -315,6 +354,7 @@
 			//显示新增界面
 			handleAdd: function () {
 				this.addFormVisible = true;
+				this.isUpload = false;
 				this.addForm = {
 					name: '',
 					username: '',
@@ -322,6 +362,7 @@
 					password2: '',
 					mobile: '',
 					email: '',
+					avatar: '',
 					status: "ENABLE"
 				};
 				getRoleDropList().then((res) => {
@@ -437,6 +478,28 @@
 
 </script>
 
-<style scoped>
-
+<style>
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>

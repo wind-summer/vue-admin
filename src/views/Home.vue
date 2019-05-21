@@ -244,13 +244,14 @@
 
 <script>
 	import NavMenu from "./NavMenu.vue";
-	import { getLoginInfo } from '../api/api';
+	import { getLoginInfo,ipAddress } from '../api/api';
 	export default {
 		components: {
 			NavMenu: NavMenu
 		},
 		data() {
 			return {
+				ipAddress: ipAddress,
 				defaultActive: '',
 				currentTabValue: '0',
 				editableTabs: [{
@@ -368,7 +369,7 @@
 			if (user) {
 				user = JSON.parse(user);
 				this.sysUserName = user.name || '';
-				this.sysUserAvatar = user.avatar || '';
+				this.sysUserAvatar = this.ipAddress+user.avatar || '';
 			}
 			let _this = this;
 			//加载用户登录信息
