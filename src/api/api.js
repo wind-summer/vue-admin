@@ -12,6 +12,7 @@ export const ipAddress = base;
 
 //登录
 export const requestLogin = params => { return instance.post(`${base}/sys/login/sign_in`, params).then(res => res.data); };
+export const editPassword = params => { return instance.put(`${base}/sys/login/password`, params).then(res => res.data); };
 
 //用户管理接口
 export const getUserInfo = params => { return instance.get(`${base}/sys/user/${params}/detail`,  params); };

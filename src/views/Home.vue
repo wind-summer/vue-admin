@@ -149,11 +149,30 @@
 					<el-dropdown-menu slot="dropdown">
 						<el-dropdown-item>我的消息</el-dropdown-item>
 						<el-dropdown-item>设置</el-dropdown-item>
+						<el-dropdown-item @click.native="showEditPassword">修改密码</el-dropdown-item>
 						<el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
 					</el-dropdown-menu>
 				</el-dropdown>
 			</el-col>
 		</el-col>
+		<!--修改密码界面-->
+		<el-dialog title="新增" :visible.sync="editPwdFormVisible"  width="30%">
+			<el-form :model="editPwdForm" status-icon :rules="editPwdFormRules" ref="editPwdForm" label-width="80px" class="demo-ruleForm">
+				<el-form-item label="旧密码" prop="oldPassword">
+					<el-input v-model="editPwdForm.oldPassword" type="password"></el-input>
+				</el-form-item>
+				<el-form-item label="新密码" prop="password">
+					<el-input v-model="editPwdForm.password" type="password"></el-input>
+				</el-form-item>
+				<el-form-item label="确认密码" prop="password2">
+					<el-input v-model="editPwdForm.password2" type="password"></el-input>
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button @click.native="editPwdFormVisible = false">取消</el-button>
+				<el-button type="primary" @click.native="editPassword" :loading="editPwdLoading">提交</el-button>
+			</div>
+		</el-dialog>
 		<el-col :span="24" class="main">
 			<!--导航菜单-->
 			<el-menu background-color="#212121" text-color="#fff" active-text-color="#00F5FF" :default-active="defaultActive" ref="navmenu" class="el-menu-vertical-demo" unique-opened :collapse="collapsed">
@@ -244,12 +263,22 @@
 
 <script>
 	import NavMenu from "./NavMenu.vue";
-	import { getLoginInfo,ipAddress } from '../api/api';
+	import { getLoginInfo, ipAddress, editPassword } from '../api/api';
 	export default {
 		components: {
 			NavMenu: NavMenu
 		},
 		data() {
+			var checkPassword = (rule, value, callback) => {
+				debugger;
+				if (value === '') {
+					callback(new Error('请再次输入密码'));
+				} else if (value !== this.editPwdForm.password) {
+					callback(new Error('两次输入密码不一致!'));
+				} else {
+					callback();
+				}
+			};
 			return {
 				ipAddress: ipAddress,
 				defaultActive: '',
@@ -274,6 +303,25 @@
 					type: [],
 					resource: '',
 					desc: ''
+				},
+				//修改密码页面参数
+				editPwdFormVisible: false,
+				editPwdLoading: false,
+				editPwdForm:{
+					oldPassword: '',
+					password: '',
+					password2: ''
+				},
+				editPwdFormRules:{
+					password: [
+						{ required: true, message: '请输入密码', trigger: 'blur' }
+					],
+					password2: [
+						{ validator: checkPassword, trigger: ['blur','change'] }
+					],
+					oldPassword: [
+						{ required: true, message: '请输入旧密码', trigger: 'blur' }
+					],
 				}
 			}
 		},
@@ -341,6 +389,42 @@
 				console.log('submit!');
 			},
 			handleselect: function (a, b) {
+			},
+			//显示修改密码页面
+			showEditPassword(){
+				this.editPwdFormVisible = true;
+				this.$refs.editPwdForm.resetFields();
+			},
+			//修改密码
+			editPassword(){
+				this.$refs.editPwdForm.validate((valid) => {
+					var _this = this;
+					if (valid) {
+						this.$confirm('确认提交吗？', '提示', {}).then(() => {
+							this.editPwdLoading = true;
+							let para = this.editPwdForm;
+							editPassword(para).then((res) => {
+								this.editPwdLoading = false;
+								let { msg, code, data } = res;
+								if(code == 0){
+									this.$message({
+										message: msg,
+										type: 'success'
+									});
+									this.$refs['editPwdForm'].resetFields();
+									this.editPwdFormVisible = false;
+									sessionStorage.removeItem('user');
+									_this.$router.push('/login');
+								}else{
+									this.$message({
+										message: msg,
+										type: 'error'
+									});
+								}
+							});
+						});
+					}
+				});
 			},
 			//退出登录
 			logout: function () {
