@@ -23,7 +23,7 @@
 			</el-table-column>
 			<el-table-column prop="roleName" label="角色名称" width="150" sortable>
 			</el-table-column>
-			<el-table-column prop="remark" label="备注" width="200" sortable>
+			<el-table-column prop="remark" label="备注" sortable>
 			</el-table-column>
 			<el-table-column prop="createTime" label="创建时间" width="190" sortable>
 			</el-table-column>

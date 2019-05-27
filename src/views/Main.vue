@@ -48,7 +48,6 @@
         methods: {
             drawBasicAreaChart() {
                 this.basicAreaChart = echarts.init(document.getElementById('basicAreaChart'));
-                debugger;
                 let _this = this;
                 this.basicAreaChart.setOption({
                     title: { text: this.basicAreaChartData.title},
@@ -112,7 +111,6 @@
             },
             getDashboardData(){
                 mainDashboardData().then((res) => {
-                    debugger;
                     this.basicAreaChartData = res.data.basicAreaChartData;
                     this.pieChartData = res.data.pieChartData;
                     this.drawCharts();

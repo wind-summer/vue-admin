@@ -1,6 +1,6 @@
 <template>
         <div >
-            <iframe :src="htmlAddress" height="800px" width="100%"></iframe>
+            <iframe :src="htmlAddress" class="iframe"></iframe>
         </div>
 </template>
 
@@ -20,3 +20,9 @@
 		}
 	}
 </script>
+<style>
+	.iframe{
+		width: 100%;
+		height: 850px;
+	}
+</style>

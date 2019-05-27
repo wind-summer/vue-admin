@@ -251,14 +251,12 @@
 		},
 		methods: {	
 			uploadAvatarOnSuccess(response, file, fileList){
-				debugger;
 				//把url赋值给avatar
 				this.addForm.avatar = response.data;
 				this.editForm.avatar = response.data;
 				this.isUpload = true;
 			},
 			uploadAvatarOnRemove(){
-				debugger;
 				this.addForm.avatar = '';
 				this.editForm.avatar = '';
 			},
