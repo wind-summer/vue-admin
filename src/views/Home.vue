@@ -1,9 +1,9 @@
 <style scoped lang="scss">
 	@import '~scss_vars';
-	.el-menu-vertical-demo:not(.el-menu--collapse) {
-		width: 230px;
-		min-height: 400px;
-	}
+	// .el-menu-vertical-demo:not(.el-menu--collapse) {
+	// 	width: 210px;
+	// 	min-height: 400px;
+	// }
 
 	.container {
 		position: absolute;
@@ -19,7 +19,7 @@
 		//padding-right:20px;
 	}
 	.logo {
-		width:230px;
+		width:200px;
 		font-size: 22px;
 		padding-left:20px;
 		border-color: rgba(238,241,146,0.3);
@@ -72,7 +72,7 @@
 		height: 100%;
 	}
 	.aside-menu {
-		width: 230px;
+		width: 200px;
 		height: 100%;
 	}
 

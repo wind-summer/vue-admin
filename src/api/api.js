@@ -4,11 +4,18 @@ var instance = axios.create({
     headers: {'Content-Type': 'application/json'}
 });
 
-let base = 'http://localhost:8090/admin';
+let base = "http://localhost:8090/admin";
+
+if (location.hostname === 'localhost') {
+  base = "http://localhost:8090/admin";
+} else if (location.hostname === '192.168.56.101') {
+  base = "http://192.168.56.101:8090/admin";
+}
 
 export const uploadUserLogoUrl = base + "/sys/file/upload/userLogo";
 
 export const ipAddress = base;
+axios.defaults.baseURL;
 
 //登录
 export const requestLogin = params => { return instance.post(`${base}/sys/login/sign_in`, params).then(res => res.data); };
